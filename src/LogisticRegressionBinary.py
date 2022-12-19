@@ -29,7 +29,7 @@ def _cv_tuning(X, y, list_of_learning_rates, list_of_number_of_iterations, k):
                 X_test = X_folds[i]
                 y_test = y_folds[i]
                 # Train the model
-                model = MyLogisticRegression(epoch=number_of_iterations, learning_rate=learning_rate)
+                model = MyLogisticRegression(epoch=number_of_iterations, learning_rate=learning_rate, verbose=False)
                 model.fit(X_train, y_train)
                 # Predict
                 y_pred = model.predict(X_test)
@@ -322,6 +322,36 @@ class MyLogisticRegression:
         plt.show()
 
     def _cv_learning_curve(self, X_train, y_train, X_test, y_test, cv):
+        # Learning curve on training set, fill_between is the standard deviation
+        train_score = []
+        test_score = []
+        for i in range(1, X_train.shape[0] + 1):
+            scores, avg_score = self._cv(X_train[:i], y_train[:i], cv)
+            y_test_pred = self.predict(X_test)
+            train_score.append(avg_score)
+            test_score.append(np.mean(np.where(y_test_pred >= 0.5, 1, 0) == y_test))
+
+        fig, ax = plt.subplots(figsize=(15, 10))
+        plt.title('Learning curve on training set', fontsize=20)
+        plt.plot(train_score, label='Training set', linewidth=3, color='blue')
+        plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
+                         np.array(train_score) + np.std(train_score), alpha=0.2, color='blue')
+        plt.plot(test_score, label='Test set', linewidth=3, color='red')
+        plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
+                         np.array(test_score) + np.std(test_score), alpha=0.2, color='red')
+        plt.legend()
+        plt.show()
+
+    def _cv2_learning_curve(self, X_train, y_train, X_test, y_test, cv):
+        """
+        Cross validation learning curve. This function is used to plot the learning curve
+        on the training set and the test set. The learning curve is computed by cross validation over
+        the training set samples
+        Step 1: Initialize the training and test scores, and the number of samples
+        Step 2: For each number of samples, compute the cross validation scores
+        Step 3: Compute the average score and the standard deviation of the scores
+        Step 4: Plot the learning curve
+        """
         # Learning curve on training set, fill_between is the standard deviation
         train_score = []
         test_score = []
