@@ -192,34 +192,48 @@ class MyLogisticRegression:
         return dw, db
 
     def loss_auc(self):
-        fig, ax1 = plt.subplots(figsize=(8, 8))
-        ax1.plot(self.loss, color='red')
-        ax1.set_xlabel('Epoch', fontsize=15)
-        ax1.set_ylabel('Loss', fontsize=15, color='red')
-        ax1.tick_params(axis='y', labelcolor='red')
-
-        ax2 = ax1.twinx()
-        ax2.plot(self.accuracy, color='blue')
-        ax2.set_ylabel('Accuracy', fontsize=15, color='blue')
-        ax2.tick_params(axis='y', labelcolor='blue')
-
-        fig.tight_layout()
+        fig, ax = plt.subplots(1, 2, figsize=(15, 8))
+        ax[0].plot(self.loss, label='Loss', color='red', lw=3)
+        ax[0].set_title('Loss', fontsize=15)
+        ax[0].set_xlabel('Epoch', fontsize=15)
+        ax[0].set_ylabel('Loss', fontsize=15)
+        ax[1].plot(self.accuracy, label='Accuracy', color='blue', lw=3)
+        ax[1].set_title('Accuracy', fontsize=15)
+        ax[1].set_xlabel('Epoch', fontsize=15)
+        ax[1].set_ylabel('Accuracy', fontsize=15)
+        plt.legend()
         plt.show()
 
     def roc_curve(self, y, y_pred):
         from sklearn.metrics import roc_curve, auc
         fpr, tpr, _ = roc_curve(y, y_pred)
         roc_auc = auc(fpr, tpr)
-        plt.subplots(figsize=(10, 10))
-        plt.plot(fpr, tpr, color='darkorange',
-                 lw=3, label='ROC curve (area = %0.2f)' % roc_auc)
+        plt.figure(figsize=(10, 10))
+        plt.plot(fpr, tpr, color='darkorange', lw=3, label='ROC curve (area = %0.2f)' % roc_auc)
         plt.plot([0, 1], [0, 1], color='navy', lw=3, linestyle='--')
-        plt.xlim([-0.05, 1.0])
+        plt.xlim([-0.05, 1.05])
         plt.ylim([-0.05, 1.05])
         plt.xlabel('False Positive Rate', fontsize=15)
         plt.ylabel('True Positive Rate', fontsize=15)
-        plt.title('Receiver operating characteristic example', fontsize=15)
-        plt.legend(loc="lower right")
+        plt.title('Receiver Operating Characteristic', fontsize=15)
+        plt.legend(loc="lower right", fontsize=15)
+        plt.show()
+
+    def precision_recall_curve(self, y, y_pred):
+        from sklearn.metrics import precision_recall_curve, average_precision_score
+        precision, recall, _ = precision_recall_curve(y, y_pred)
+        average_precision = average_precision_score(y, y_pred)
+        plt.figure(figsize=(10, 10))
+        plt.step(recall, precision, color='b', alpha=0.2,
+                 where='post')
+        plt.fill_between(recall, precision, step='post', alpha=0.2,
+                         color='b')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.xlim([-0.05, 1.05])
+        plt.ylim([-0.05, 1.05])
+        plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
+            average_precision))
         plt.show()
 
     def confusion_matrix(self, y, y_pred):
@@ -240,6 +254,32 @@ class MyLogisticRegression:
         plt.ylabel('True label', fontsize=15)
         plt.tick_params(labelsize=15)
         plt.show()
+
+    # Kappa statistics
+    def _kappa(self, y, y_pred):
+        """
+        Kappa statistics.
+        Kappa is a statistic which measures inter-rater agreement for qualitative (categorical) items.
+        It is generally thought to be a more robust measure than simple percent agreement calculation,
+        since kappa takes into account the possibility of the agreement occurring by chance.
+        If all raters assign the same label to all instances, then the kappa is 1.0;
+        if all raters assign different labels to all instances, then the kappa is 0.0.
+        Input:
+            y: array, labels
+            y_pred: array, predicted labels
+        Output:
+            kappa: float, kappa statistics
+        """
+        n = y.shape[0]
+        p0 = np.sum(y == 0)
+        p1 = np.sum(y == 1)
+        pp0 = np.sum(y_pred == 0)
+        pp1 = np.sum(y_pred == 1)
+        tp = np.sum((y == 0) & (y_pred == 0))
+        tn = np.sum((y == 1) & (y_pred == 1))
+        kappa = (tp + tn - (p0 * pp0 + p1 * pp1) / n) / (n - (p0 * pp0 + p1 * pp1) / n)
+        print('Kappa statistics: {:.4f}'.format(kappa))
+        return kappa
 
     def classification_report(self, y, y_pred):
         from sklearn.metrics import classification_report
@@ -269,6 +309,9 @@ class MyLogisticRegression:
             scores.append(score)
 
         avg_score = np.mean(scores)
+        print(f'Average score: {avg_score:.4f}')
+        for i in range(cv):
+            print(f'Score fold {i + 1}: {scores[i]:.4f}')
 
         return scores, avg_score
 
@@ -322,36 +365,6 @@ class MyLogisticRegression:
         plt.show()
 
     def _cv_learning_curve(self, X_train, y_train, X_test, y_test, cv):
-        # Learning curve on training set, fill_between is the standard deviation
-        train_score = []
-        test_score = []
-        for i in range(1, X_train.shape[0] + 1):
-            scores, avg_score = self._cv(X_train[:i], y_train[:i], cv)
-            y_test_pred = self.predict(X_test)
-            train_score.append(avg_score)
-            test_score.append(np.mean(np.where(y_test_pred >= 0.5, 1, 0) == y_test))
-
-        fig, ax = plt.subplots(figsize=(15, 10))
-        plt.title('Learning curve on training set', fontsize=20)
-        plt.plot(train_score, label='Training set', linewidth=3, color='blue')
-        plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
-                         np.array(train_score) + np.std(train_score), alpha=0.2, color='blue')
-        plt.plot(test_score, label='Test set', linewidth=3, color='red')
-        plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
-                         np.array(test_score) + np.std(test_score), alpha=0.2, color='red')
-        plt.legend()
-        plt.show()
-
-    def _cv2_learning_curve(self, X_train, y_train, X_test, y_test, cv):
-        """
-        Cross validation learning curve. This function is used to plot the learning curve
-        on the training set and the test set. The learning curve is computed by cross validation over
-        the training set samples
-        Step 1: Initialize the training and test scores, and the number of samples
-        Step 2: For each number of samples, compute the cross validation scores
-        Step 3: Compute the average score and the standard deviation of the scores
-        Step 4: Plot the learning curve
-        """
         # Learning curve on training set, fill_between is the standard deviation
         train_score = []
         test_score = []
