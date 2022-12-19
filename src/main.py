@@ -61,3 +61,6 @@ model.classification_report(y_test, y_pred)
 scores, avg_score = model._cv(X_train, y_train, 10)
 print('Cross-validation scores:', scores)
 print('Average cross-validation score:', avg_score)
+
+# Learning curve
+model._cv_learning_curve(X_train, y_train, X_test, y_test, 10)
