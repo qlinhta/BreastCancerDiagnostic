@@ -8,11 +8,12 @@ class LDA:
 
 
 
-  def mean(self,X,y):
+  def mean(X,y):
     classes = np.unique(y)
-    means = np.zeros(classes.shape[0],X.shape[1])
+    means = np.zeros((classes.shape[0],X.shape[1]))
     for i in range(classes.shape[0]):
-      means[i,:] = np.mean(X[y==i],axis=0)
+      class_idx = np.flatnonzero(y == i)
+      means[i,:] = np.mean(X[class_idx],axis=0)
     return means
 
   def pi_k(self,X,y,k):
