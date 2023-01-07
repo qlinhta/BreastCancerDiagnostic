@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from src import metrics
+
 
 class LogisticRegression:
     def __init__(self, learning_rate, max_iter, f_intercept=True, verbose=False):
@@ -52,7 +54,7 @@ class LogisticRegression:
             self.bias -= self.learning_rate * db
 
             if self.verbose:
-                if i % 100 == 0:
+                if i % self.max_iter == 0:
                     print(f'Loss: {self._losses(y, y_pred)} \tAccuracy: {self._accuracy(y, y_pred)}')
 
             self.losses.append(self._losses(y, y_pred))
@@ -64,3 +66,33 @@ class LogisticRegression:
         if self.f_intercept:
             X = self._add_intercept(X)
         return self._sigmoid(np.dot(X, self.weights) + self.bias)
+
+
+def cross_validation_lr(X, y, learning_rates, max_iters, model, k=5, verbose=False):
+    X_folds = np.array_split(X, k)
+    y_folds = np.array_split(y, k)
+
+    best_accuracy = 0
+    best_learning_rate = None
+    best_max_iter = None
+
+    for learning_rate in learning_rates:
+        for max_iter in max_iters:
+            accuracies = []
+            for i in range(k):
+                # Get the training data
+                X_train = np.concatenate(X_folds[:i] + X_folds[i + 1:])
+                y_train = np.concatenate(y_folds[:i] + y_folds[i + 1:])
+                X_val = X_folds[i]
+                y_val = y_folds[i]
+                model.fit(X_train, y_train, learning_rate, max_iter, verbose)
+                y_pred = model.predict(X_val)
+                accuracies.append(metrics.accuracy(y_val, y_pred))
+
+            accuracy = np.mean(accuracies)
+            if accuracy > best_accuracy:
+                best_accuracy = accuracy
+                best_learning_rate = learning_rate
+                best_max_iter = max_iter
+
+    return best_learning_rate, best_max_iter
