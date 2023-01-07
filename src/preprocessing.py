@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 # MinMaxScaler
 def min_max_scaler(cols):
     """
