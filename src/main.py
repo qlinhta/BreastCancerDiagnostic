@@ -3,7 +3,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from LogisticRegressionBinary import _cv_tuning, hyperparameter_tuning, MyLogisticRegression
+from LogisticRegressionBinary import _cv_tuning, hyperparameter_tuning, MyLogisticRegression, roc_curve, \
+    confusion_matrix, classification_report
 
 sns.set_theme(style="darkgrid")
 import warnings
@@ -55,12 +56,13 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 model.loss_auc()
-model.roc_curve(y_test, y_pred)
-model.confusion_matrix(y_test, y_pred)
-model.classification_report(y_test, y_pred)
+roc_curve(y_test, y_pred)
+confusion_matrix(y_test, y_pred)
+classification_report(y_test, y_pred)
 scores, avg_score = model._cv(X_train, y_train, 10)
 print('Cross-validation scores:', scores)
 print('Average cross-validation score:', avg_score)
 
 # Learning curve
 model._cv_learning_curve(X_train, y_train, X_test, y_test, 10)
+

@@ -117,3 +117,7 @@ def local_outlier_factor(df, n_neighbors, contamination, threshold):
     filter = [_ for _, score in enumerate(scores) if score < threshold]
     index_of_outliers = np.array(filter)
     return threshold, scores, index_of_outliers
+
+
+
+
