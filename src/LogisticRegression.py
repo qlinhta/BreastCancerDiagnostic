@@ -4,8 +4,9 @@ from src import metrics
 
 
 class LogisticRegression:
-    def __init__(self, learning_rate, max_iter, verbose=False):
+    def __init__(self, learning_rate, max_iter, verbose=False, random_state=42):
         self.learning_rate = learning_rate
+        self.random_state = random_state
         self.max_iter = max_iter
         self.verbose = verbose
         self.weights = None
@@ -25,29 +26,33 @@ class LogisticRegression:
         return (-y * np.log(y_pred) - (1 - y) * np.log(1 - y_pred)).mean()
 
     def fit(self, X, y):
+        # Initialize the weights and the bias
+        np.random.seed(self.random_state)
+        self.weights = np.random.randn(X.shape[1])
+        self.bias = np.random.randn()
 
-        self.weights = np.zeros(X.shape[1])
-        self.bias = 0
-
+        # Start training
         for i in range(self.max_iter):
-            z = np.dot(X, self.weights) + self.bias
-            y_pred = self._sigmoid(z)
+            # Forward propagation
+            y_pred = self._sigmoid(np.dot(X, self.weights) + self.bias)
 
-            dw = np.dot(X.T, (y_pred - y)) / y.size
-            db = np.sum(y_pred - y) / y.size
+            # Compute the loss
+            self.losses.append(self._losses(y, y_pred))
+            # Compute the accuracy
+            self.accuracies.append(metrics.accuracy(y, self.predict(X)))
 
+            # Backward propagation
+            dw = np.dot(X.T, (y_pred - y)) / y.shape[0]
+            db = np.sum(y_pred - y) / y.shape[0]
+
+            # Update the weights and the bias
             self.weights -= self.learning_rate * dw
             self.bias -= self.learning_rate * db
 
+            # Print the loss and the accuracy
             if self.verbose:
-                # Print loss and accuracy every 100 iterations
-                if i % 100 == 0:
-                    print(f'Loss: {self._losses(y, y_pred)} \t Accuracy: {metrics.accuracy(y, y_pred)}')
-
-            self.losses.append(self._losses(y, y_pred))
-            self.accuracies.append(metrics.accuracy(y, y_pred))
-            self.weights_list.append(self.weights)
-            self.bias_list.append(self.bias)
+                print(
+                    f'Iteration: {i + 1}/{self.max_iter}, loss: {self.losses[-1]:.4f}, accuracy: {self.accuracies[-1]:.4f}')
 
     def predict(self, X):
         z = np.dot(X, self.weights) + self.bias
@@ -55,7 +60,7 @@ class LogisticRegression:
         return np.round(y_pred)
 
 
-def cross_validation_lr(X, y, learning_rates, max_iters, model, k=5, verbose=False):
+def cross_validation_lr(X, y, learning_rates, max_iters, k=5, verbose=True):
     X_folds = np.array_split(X, k)
     y_folds = np.array_split(y, k)
 
@@ -65,6 +70,7 @@ def cross_validation_lr(X, y, learning_rates, max_iters, model, k=5, verbose=Fal
 
     for learning_rate in learning_rates:
         for max_iter in max_iters:
+            model = LogisticRegression(learning_rate=learning_rate, max_iter=max_iter, verbose=verbose)
             accuracies = []
             for i in range(k):
                 # Get the training data
@@ -72,7 +78,7 @@ def cross_validation_lr(X, y, learning_rates, max_iters, model, k=5, verbose=Fal
                 y_train = np.concatenate(y_folds[:i] + y_folds[i + 1:])
                 X_val = X_folds[i]
                 y_val = y_folds[i]
-                model.fit(X_train, y_train, learning_rate, max_iter, verbose)
+                model.fit(X_train, y_train)
                 y_pred = model.predict(X_val)
                 accuracies.append(metrics.accuracy(y_val, y_pred))
 
@@ -82,4 +88,4 @@ def cross_validation_lr(X, y, learning_rates, max_iters, model, k=5, verbose=Fal
                 best_learning_rate = learning_rate
                 best_max_iter = max_iter
 
-    return best_learning_rate, best_max_iter
+    return best_learning_rate, best_max_iter, best_accuracy
