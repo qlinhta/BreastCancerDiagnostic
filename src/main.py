@@ -33,8 +33,8 @@ plt.scatter(X_train[y_train == 0]['smoothness_mean_log'], X_train[y_train == 0][
             label='Benign', color='black', s=50, edgecolors='black', facecolors='white')
 plt.scatter(X_train[y_train == 1]['smoothness_mean_log'], X_train[y_train == 1]['texture_mean_log'], marker='v',
             label='Malignant', color='black', s=50, edgecolors='black', facecolors='black')
-plt.xlabel('smoothness_mean_log')
-plt.ylabel('texture_mean_log')
+plt.xlabel('Log Scale of Smoothness Mean')
+plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
 plt.show()
 
