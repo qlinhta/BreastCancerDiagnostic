@@ -53,7 +53,7 @@ def roc_curve(y, y_pred):
     from sklearn.metrics import roc_curve, auc
     fpr, tpr, _ = roc_curve(y, y_pred)
     roc_auc = auc(fpr, tpr)
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(8, 8))
     plt.plot(fpr, tpr, color='black', lw=1, label='ROC curve (area = %0.2f)' % roc_auc)
     plt.plot([0, 1], [0, 1], color='black', lw=1, linestyle='--')
     plt.xlim([-0.05, 1.05])
@@ -69,7 +69,7 @@ def precision_recall_curve(y, y_pred):
     from sklearn.metrics import precision_recall_curve, average_precision_score
     precision, recall, _ = precision_recall_curve(y, y_pred)
     average_precision = average_precision_score(y, y_pred)
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(8, 8))
     plt.step(recall, precision, color='black', alpha=0.2,
              where='post')
     plt.fill_between(recall, precision, step='post', alpha=0.2,
