@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from src import metrics
 
@@ -60,7 +61,7 @@ class LogisticRegression:
         return np.round(y_pred)
 
 
-def cross_validation_lr(X, y, learning_rates, max_iters, k=5, verbose=True):
+def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
     X_folds = np.array_split(X, k)
     y_folds = np.array_split(y, k)
 
@@ -89,3 +90,4 @@ def cross_validation_lr(X, y, learning_rates, max_iters, k=5, verbose=True):
                 best_max_iter = max_iter
 
     return best_learning_rate, best_max_iter, best_accuracy
+

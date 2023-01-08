@@ -1,4 +1,5 @@
 import pandas as pd
+
 from src import LogisticRegression, metrics
 from sklearn.model_selection import train_test_split
 
@@ -25,6 +26,9 @@ metrics.classification_summary(y_test, y_pred)
 metrics.confusion_matrix(y_test, y_pred)
 metrics.roc_curve(y_test, y_pred)
 metrics.precision_recall_curve(y_test, y_pred)
+metrics.loss_curve(model.losses)
+metrics.accuracy_curve(model.accuracies)
+metrics.learning_curve_lr(X_train, y_train, X_test, y_test, best_learning_rate, best_max_iter)
 
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
