@@ -1,5 +1,20 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import warnings
 
+# Set style for plots as latex style
+plt.style.use('seaborn-paper')
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+plt.rc('font', size=18)
+plt.rc('axes', titlesize=18)
+plt.rc('axes', labelsize=18)
+plt.rc('xtick', labelsize=18)
+plt.rc('ytick', labelsize=18)
+plt.rc('legend', fontsize=18)
+plt.rc('lines', markersize=10)
+
+warnings.filterwarnings('ignore')
 from src import LogisticRegression, metrics
 from sklearn.model_selection import train_test_split
 
@@ -11,6 +26,17 @@ data = pd.concat([df, label], axis=1)
 X = data.drop('diagnosis', axis=1)
 y = data['diagnosis']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+plt.subplots(figsize=(10, 10))
+plt.title('Dataset')
+plt.scatter(X_train[y_train == 0]['smoothness_mean_log'], X_train[y_train == 0]['texture_mean_log'], marker='o',
+            label='Benign', color='black', s=50, edgecolors='black', facecolors='white')
+plt.scatter(X_train[y_train == 1]['smoothness_mean_log'], X_train[y_train == 1]['texture_mean_log'], marker='v',
+            label='Malignant', color='black', s=50, edgecolors='black', facecolors='black')
+plt.xlabel('smoothness_mean_log')
+plt.ylabel('texture_mean_log')
+plt.legend()
+plt.show()
 
 # Tuning the hyperparameters
 learning_rates = [0.001, 0.01, 0.1, 1, 5, 10]

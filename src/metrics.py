@@ -2,7 +2,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 
 # Set style for plots as latex style
@@ -143,10 +142,10 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
         test_score.append(accuracy(y_test, model.predict(X_test)))
     fig, ax = plt.subplots(figsize=(10, 8))
     plt.title('Learning curve')
-    plt.plot(train_score, label='Training set', linewidth=1, color='black', marker='v', markersize=15)
+    plt.plot(train_score, label='Training score', linewidth=1, color='black', marker='v', markersize=15)
     plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
                      np.array(train_score) + np.std(train_score), alpha=0.1, color='black')
-    plt.plot(test_score, label='Test set', linewidth=1, color='black', marker='o', markersize=15)
+    plt.plot(test_score, label='Test score', linewidth=1, color='black', marker='o', markersize=15)
     plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
                      np.array(test_score) + np.std(test_score), alpha=0.1, color='black')
     plt.xlabel('Percentage of training set')
