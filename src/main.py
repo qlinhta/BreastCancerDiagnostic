@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import warnings
 
 # Set style for plots as latex style
@@ -55,6 +56,19 @@ metrics.precision_recall_curve(y_test, y_pred)
 metrics.loss_curve(model.losses)
 metrics.accuracy_curve(model.accuracies)
 metrics.learning_curve_lr(X_train, y_train, X_test, y_test, best_learning_rate, best_max_iter)
+
+# Plot the test data with predicted labels
+plt.subplots(figsize=(10, 10))
+plt.title('Predicted Labels')
+plt.scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['texture_mean_log'], marker='o',
+            label='Benign', color='black', s=50, edgecolors='blue', facecolors='white')
+plt.scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
+            label='Malignant', color='black', s=50, edgecolors='red', facecolors='red')
+plt.xlabel('Log Scale of Smoothness Mean')
+plt.ylabel('Log Scale of Texture Mean')
+plt.legend()
+plt.show()
+
 
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
