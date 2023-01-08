@@ -69,8 +69,36 @@ plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
 plt.show()
 
+# Plot the test data with true labels and predicted labels together for comparison,
+# if the predicted labels are incorrect then the points will be marked with a red cross
+fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+ax[0].set_title('True Labels')
+ax[0].scatter(X_test[y_test == 0]['smoothness_mean_log'], X_test[y_test == 0]['texture_mean_log'], marker='o',
+              label='Benign', color='black', s=100, edgecolors='blue', facecolors='white')
+ax[0].scatter(X_test[y_test == 1]['smoothness_mean_log'], X_test[y_test == 1]['texture_mean_log'], marker='v',
+              label='Malignant', color='black', s=100, edgecolors='green', facecolors='green')
+ax[0].set_xlabel('Log Scale of Smoothness Mean')
+ax[0].set_ylabel('Log Scale of Texture Mean')
+ax[0].legend()
+
+ax[1].set_title('Predicted Labels')
+ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['texture_mean_log'], marker='o',
+              label='Benign', color='black', s=100, edgecolors='red', facecolors='white')
+ax[1].scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
+              label='Malignant', color='black', s=100, edgecolors='darkorange', facecolors='darkorange')
+ax[1].set_xlabel('Log Scale of Smoothness Mean')
+ax[1].set_ylabel('Log Scale of Texture Mean')
+ax[1].legend()
+
+for i in range(len(y_test)):
+    if y_test.iloc[i] != y_pred[i]:
+        ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
+                      label='Incorrect', color='black', s=100, edgecolors='black', facecolors='black')
+plt.show()
 
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
 print(f'Best max iter: {best_max_iter}')
 print(f'Best accuracy: {best_accuracy}')
+
+
