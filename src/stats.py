@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import scipy.stats as stats
-import missingno as ms
 import matplotlib.pyplot as plt
 import warnings
 
@@ -13,12 +12,12 @@ warnings.filterwarnings('ignore')
 
 # Correlation between features of X and y, ascending order
 def correlation_with_target(df, target):
-    '''
+    """
     Correlation is a statistical measure that expresses the extent to which two variables are linearly related.
     :param df: dataframe
     :param target: target column
     :return: correlation between features of X and y, ascending order
-    '''
+    """
     corr = df.corrwith(target).sort_values(ascending=False)
     sns.barplot(x=corr, y=corr.index)
     plt.show()
@@ -26,12 +25,12 @@ def correlation_with_target(df, target):
 
 # Check skewness of each column in dataframe
 def check_skewness(df):
-    '''
+    """
     Skewness is a measure of the asymmetry of the probability distribution of a real-valued random variable about its mean.
     The skewness value can be positive or negative, or even undefined.
     :param df: dataframe
     :return: skewness of each column in dataframe
-    '''
+    """
     for i in df.columns:
         # If skewness is positive, then it is right skewed
         if df[i].skew() > 0:
@@ -49,11 +48,11 @@ def check_skewness(df):
 
 # Check normality of each column in dataframe
 def check_normality(X):
-    '''
+    """
     Normality is a property of a probability distribution of a random variable whereby it may be assumed that the variable
     :param X: dataframe
     :return: normality of each column in dataframe
-    '''
+    """
     normality = []
     for i in X.columns:
         stat, p = shapiro(X[i])
@@ -87,10 +86,10 @@ def interval_confidence(data, alpha):
 
 
 def estimate_interval_of_confidence(df):
-    '''
+    """
     :param df: dataframe
     :return: interval of confidence for each feature of X
-    '''
+    """
 
     # Estimate interval confidence for each feature of X with alpha = 0.05
     for i in df.columns:
@@ -100,7 +99,7 @@ def estimate_interval_of_confidence(df):
 
 # Local Outlier Factor
 def local_outlier_factor(df, n_neighbors, contamination, threshold):
-    '''
+    """
     Local Outlier Factor (LOF) is an unsupervised anomaly detection method which computes the local density deviation of a given data point with respect to its neighbors.
     It considers as outlier the samples that have a substantially lower density than their neighbors.
     :param df: dataframe
@@ -108,7 +107,7 @@ def local_outlier_factor(df, n_neighbors, contamination, threshold):
     :param contamination: The amount of contamination of the data set, i.e. the proportion of outliers in the data set.
     :param threshold: The threshold to use when converting raw outlier scores to binary labels.
     :return: X_scores, index_of_outliers: The local outlier factor of each input samples. The lower, the more normal
-    '''
+    """
     from sklearn.neighbors import LocalOutlierFactor
     clf = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
     clf.fit_predict(df)
@@ -117,7 +116,3 @@ def local_outlier_factor(df, n_neighbors, contamination, threshold):
     filter = [_ for _, score in enumerate(scores) if score < threshold]
     index_of_outliers = np.array(filter)
     return threshold, scores, index_of_outliers
-
-
-
-

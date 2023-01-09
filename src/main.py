@@ -2,8 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
-
-# Set style for plots as latex style
 plt.style.use('seaborn-paper')
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')

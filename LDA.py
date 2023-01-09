@@ -93,3 +93,5 @@ class LDA:
         b = -1 / 2 * p + np.log(log)
 
         return np.dot(X, weight) + b
+
+
