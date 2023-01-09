@@ -31,7 +31,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 from sklearn.svm import LinearSVC
 
 param_grid = {'C': [0.1, 1, 10, 100, 1000],
-              'max_iter': [100, 1000, 10000, 100000]
+              'max_iter': [100, 1000, 10000]
               }
 
 grid = GridSearchCV(LinearSVC(), param_grid, refit=True, verbose=2)
