@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
+
 plt.style.use('seaborn-paper')
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
@@ -56,6 +57,10 @@ metrics.roc_curve(y_test, y_pred)
 metrics.precision_recall_curve(y_test, y_pred)
 metrics.loss_curve(model.losses)
 metrics.accuracy_curve(model.accuracies)
+print("Accuracy: ", metrics.accuracy(y_test, y_pred))
+print("Precision: ", metrics.precision(y_test, y_pred))
+print("Recall: ", metrics.recall(y_test, y_pred))
+print("F1: ", metrics.f1_score(y_test, y_pred))
 metrics.learning_curve_lr(X_train, y_train, X_test, y_test, best_learning_rate, best_max_iter)
 
 plt.subplots(figsize=(8, 8))

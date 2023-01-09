@@ -35,7 +35,7 @@ y = df['diagnosis']
 
 # Reduce the dimension of the dataset with PCA and t-SNE
 X_pca = ReduceDimension.pca(X, number_of_components=10)
-X_tsne = ReduceDimension.tsne(X, number_of_components=3)
+X_tsne = ReduceDimension.tsne(X, number_of_components=2)
 
 # Plot the dataset with PCA and t-SNE
 plt.subplots(figsize=(8, 8))
@@ -69,7 +69,7 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 learning_rates = [0.001, 0.01, 0.1, 0.5, 1, 5, 10]
-max_iters = [100, 400, 500, 1000, 1500]
+max_iters = [100, 400, 500, 1000, 1500, 2000]
 
 best_learning_rate, best_max_iter, best_accuracy = LogisticRegression.cross_validation_lr(X_train, y_train,
                                                                                           learning_rates, max_iters,
@@ -104,3 +104,4 @@ plt.show()
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
 print(f'Best max iter: {best_max_iter}')
+

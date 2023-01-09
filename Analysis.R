@@ -72,8 +72,8 @@ boxplot2g = function(x, y = NULL, groups = NULL, smooth = loess, smooth.args = l
   labs <- names(data)
   names(data) <- c("x", "y", "groups")
   DM <- data.matrix(data)
-  #require(ggplot2)
-  # initiate the smoother
+
+
   if (is.logical(smooth)) {
     do.smooth <- smooth
   }else {
@@ -107,16 +107,13 @@ boxplot2g = function(x, y = NULL, groups = NULL, smooth = loess, smooth.args = l
   }
   e1$colv <- colv
   e1$lvls <- levels(data$groups)
-  #colv <- colv[match(groups,levels(as.factor(data$groups)))]
-  #e1$gp <- qplot(data$x, data$y, colour = data$groups) 
+
   e1$gp <- ggplot(data = data, aes(x = x, y = y, colour = groups)) + geom_point(alpha = alpha)
-  #print(formals(smooth))
   if (ntv == 1) {
     groupbox2d(x = data, env = e1, prbs = prbs, smooth = smooth, do.smooth)
   }else {
     by(data, groups, groupbox2d, env = e1, prbs = prbs, smooth = smooth)
   }
-  #e1$gp <- e1$gp  + opts(legend.position = "none") 
   return(e1$gp)
 }
 
@@ -149,11 +146,8 @@ groupbox2d = function(x, env, prbs, past, smooth) {
     quarts <- quantile(z, probs = prbs)
     iqr <- quarts[3] - quarts[1]
     w1 <- min(z[which(z >= quarts[1] - 1.5 * iqr)])
-    #w2 <- max(z[which(z <= quarts[3] + 1.5*iqr)])
-    #return(c(w1,quarts,w2))
     return(c(w1, quarts))
   }))
-  #print(formals(smooth))
   if (!is.null(smooth)) {
     n <- nrow(qut)
     qut <- apply(qut, 2, function(z) {
@@ -162,7 +156,6 @@ groupbox2d = function(x, env, prbs, past, smooth) {
       ys <- predict(smooth(z ~ x))
       return(ys[(n + 1):(2 * n)])
     })
-    #print(dim(qut))
   }
   ccBox <- env$vectors * qut[, 2]
   md <- data.frame((env$vectors * qut[, 3]) %*% SS)
@@ -177,7 +170,6 @@ groupbox2d = function(x, env, prbs, past, smooth) {
   X1 <- NULL
   X2 <- NULL
   groups <- NULL
-  #env$gp <- env$gp + geom_point(x=md[1],y=md[2],colour=md[3])
   env$gp <- env$gp +
     geom_point(data = md, aes(x = X1, y = X2, colour = groups), size = 5) +
     scale_colour_manual(values = colv)

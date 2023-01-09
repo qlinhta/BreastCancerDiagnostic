@@ -106,13 +106,13 @@ def local_outlier_factor(df, n_neighbors, contamination, threshold):
     :param n_neighbors: Number of neighbors to use by default for k_neighbors queries.
     :param contamination: The amount of contamination of the data set, i.e. the proportion of outliers in the data set.
     :param threshold: The threshold to use when converting raw outlier scores to binary labels.
-    :return: X_scores, index_of_outliers: The local outlier factor of each input samples. The lower, the more normal
+    :return: threshold, scores, index_of_outliers: The local outlier factor of each input samples. The lower, the more normal
     """
     from sklearn.neighbors import LocalOutlierFactor
-    clf = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
-    clf.fit_predict(df)
-    scores = clf.negative_outlier_factor_
-    threshold = np.sort(scores)[int(0.1 * len(scores))]
-    filter = [_ for _, score in enumerate(scores) if score < threshold]
-    index_of_outliers = np.array(filter)
+    lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
+    y_pred = lof.fit_predict(df)
+    scores = lof.negative_outlier_factor_
+    # with threshold
+    index_of_outliers = np.where(scores < threshold)
+    index_of_outliers = list(index_of_outliers[0])
     return threshold, scores, index_of_outliers
