@@ -44,8 +44,7 @@ max_iters = [100, 200, 300, 400, 500, 1000]
 '''
 best_learning_rate, best_max_iter, best_accuracy = LogisticRegression.cross_validation_lr(X_train, y_train,
                                                                                           learning_rates, max_iters,
-                                                                                          k=10, verbose=True)
-                                                                                          '''
+                                                                                          k=10, verbose=True)'''
 best_learning_rate, best_max_iter = 5, 1000
 model = LogisticRegression.LogisticRegression(learning_rate=best_learning_rate, max_iter=best_max_iter, verbose=True)
 model.fit(X_train, y_train)
