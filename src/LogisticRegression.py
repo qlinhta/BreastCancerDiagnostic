@@ -24,17 +24,19 @@ class LogisticRegression:
 
     @staticmethod
     def _losses(y, y_pred):
-        return (-y * np.log(y_pred) - (1 - y) * np.log(1 - y_pred)).mean()
+        loss = np.zeros(y.shape[0])
+        return -np.mean(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
 
     def fit(self, X, y):
-        # Initialize the weights and the bias
-        np.random.seed(self.random_state)
-        self.weights = np.random.randn(X.shape[1])
+        np.random.seed(self.random_state)  # Set the random seed
         self.bias = np.random.randn()
+        self.weights = np.random.randn(X.shape[1])
 
         # Start training
         for i in range(self.max_iter):
             # Forward propagation
+            # TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
+            # This error is because the weights and bias are not initialized
             y_pred = self._sigmoid(np.dot(X, self.weights) + self.bias)
 
             # Compute the loss
@@ -49,7 +51,6 @@ class LogisticRegression:
             # Update the weights and the bias
             self.weights -= self.learning_rate * dw
             self.bias -= self.learning_rate * db
-
             # Print the loss and the accuracy
             if self.verbose:
                 print(
