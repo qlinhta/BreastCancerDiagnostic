@@ -141,18 +141,48 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
         test_score.append(accuracy(y_test, model.predict(X_test)))
     fig, ax = plt.subplots(figsize=(10, 8))
-    plt.title('Learning curve')
-    plt.plot(train_score, label='Training score', linewidth=1, color='black', marker='v', markersize=15)
+    plt.title('Learning curve of Logistic Regression model')
+    plt.plot(train_score, label='Training score', linewidth=1, color='blue', marker='v', markersize=15)
     plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
-                     np.array(train_score) + np.std(train_score), alpha=0.1, color='black')
-    plt.plot(test_score, label='Test score', linewidth=1, color='black', marker='o', markersize=15)
+                     np.array(train_score) + np.std(train_score), alpha=0.1, color='blue')
+    plt.plot(test_score, label='Test score', linewidth=1, color='green', marker='o', linestyle='--', markersize=15)
     plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
-                     np.array(test_score) + np.std(test_score), alpha=0.1, color='black')
+                     np.array(test_score) + np.std(test_score), alpha=0.1, color='green')
     plt.xlabel('Percentage of training set')
     plt.ylabel('Accuracy')
-    # Set limit of the axes
+    plt.grid()
     plt.ylim(0.5, 1.05)
     plt.yticks(np.arange(0.5, 1.05, 0.1))
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
+    plt.show()
+
+
+def learning_curve_svm(X_train, y_train, X_test, y_test, best_C, best_max_iter):
+    from sklearn.model_selection import learning_curve
+    from sklearn.svm import LinearSVC
+    train_sizes, train_scores, test_scores = learning_curve(LinearSVC(C=best_C, max_iter=best_max_iter), X_train,
+                                                            y_train,
+                                                            train_sizes=np.linspace(0.1, 1.0, 10), cv=10, n_jobs=-1)
+
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+    set_size = 10
+
+    plt.subplots(figsize=(10, 8))
+    plt.title('Learning Curve Linear SVM')
+    plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=10, label='Training Accuracy')
+    plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')
+    plt.plot(train_sizes, test_mean, color='green', linestyle='--', marker='s', markersize=10,
+             label='Validation Accuracy')
+    plt.fill_between(train_sizes, test_mean + test_std, test_mean - test_std, alpha=0.15, color='green')
+    plt.grid()
+    plt.xlabel('Percentage of training set')
+    plt.ylabel('Accuracy')
+    # xtick is the percentage of training set
+    plt.xticks(train_sizes, [str(int(i * 100 / set_size)) + '%' for i in range(1, set_size + 1)])
+    plt.legend(loc='lower right')
+    plt.ylim([0.5, 1.05])
     plt.show()

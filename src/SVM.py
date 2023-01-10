@@ -58,6 +58,7 @@ print("Precision: ", metrics.precision(y_test, y_pred))
 print("Recall: ", metrics.recall(y_test, y_pred))
 print("F1: ", metrics.f1_score(y_test, y_pred))
 metrics.classification_summary(y_test, y_pred)
+metrics.learning_curve_svm(X_train, y_train, X_test, y_test, best_C, best_max_iter)
 
 plt.subplots(figsize=(8, 8))
 plt.title('Predicted Labels')
@@ -71,8 +72,3 @@ plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
 plt.show()
-
-misclassified = X_test[y_test != y_pred]
-misclassified['diagnosis'] = y_test[y_test != y_pred]
-misclassified['predicted_diagnosis'] = y_pred[y_test != y_pred]
-print(misclassified)

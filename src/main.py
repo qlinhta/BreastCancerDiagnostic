@@ -40,7 +40,7 @@ plt.show()
 
 # Tuning the hyperparameters
 learning_rates = [0.001, 0.01, 0.1, 1, 5, 10]
-max_iters = [100, 200, 400, 500, 1000]
+max_iters = [100, 200, 400, 500, 1000, 1500]
 
 '''best_learning_rate, best_max_iter, best_accuracy = LogisticRegression.cross_validation_lr(X_train, y_train,
                                                                                           learning_rates, max_iters,
@@ -114,4 +114,3 @@ print(f'Accuracy: {metrics.accuracy(y_test, y_pred)}')
 print(f'Precision: {metrics.precision(y_test, y_pred)}')
 print(f'Recall: {metrics.recall(y_test, y_pred)}')
 print(f'F1: {metrics.f1_score(y_test, y_pred)}')
-
