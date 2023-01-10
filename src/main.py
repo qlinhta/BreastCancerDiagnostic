@@ -108,9 +108,3 @@ print(misclassified)
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
 print(f'Best max iter: {best_max_iter}')
-
-# Print the accuracy, precision, recall, and F1 score
-print(f'Accuracy: {metrics.accuracy(y_test, y_pred)}')
-print(f'Precision: {metrics.precision(y_test, y_pred)}')
-print(f'Recall: {metrics.recall(y_test, y_pred)}')
-print(f'F1: {metrics.f1_score(y_test, y_pred)}')
