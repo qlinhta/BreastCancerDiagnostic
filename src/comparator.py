@@ -83,7 +83,7 @@ rf_grid.fit(X_train, y_train)
 rf_best_n_estimators = rf_grid.best_params_['n_estimators']
 rf_best_max_depth = rf_grid.best_params_['max_depth']
 '''
-rf_model = RandomForestClassifier(n_estimators=100, max_depth=7)
+rf_model = RandomForestClassifier(n_estimators=1000, max_depth=13)
 rf_model.fit(X_train, y_train)
 rf_y_pred = rf_model.predict(X_test)
 
@@ -103,7 +103,7 @@ cb_best_learning_rate = cb_grid.best_params_['learning_rate']
 cb_best_depth = cb_grid.best_params_['depth']
 cb_best_iterations = cb_grid.best_params_['iterations']
 '''
-cat_model = CatBoostClassifier(learning_rate=0.1, depth=7, iterations=100)
+cat_model = CatBoostClassifier(learning_rate=0.1, depth=13, iterations=500)
 cat_model.fit(X_train, y_train)
 cat_y_pred = cat_model.predict(X_test)
 
@@ -221,18 +221,6 @@ ax[1, 1].legend()
 plt.savefig('output_plots/ROC_others.png')
 plt.show()
 
-'''
-    ax.matshow(cm, cmap=plt.cm.Greys, alpha=0.3)
-    for i in range(cm.shape[0]):
-        for j in range(cm.shape[1]):
-            ax.text(x=j, y=i, s=cm[i, j], va='center', ha='center')
-    plt.xlabel('Predicted label')
-    plt.ylabel('True label')
-    plt.title('Confusion matrix')
-    plt.tick_params(labelsize=15)
-    plt.show()
-'''
-
 # For each algorithm, plot confusion matrix
 fig, ax = plt.subplots(2, 2, figsize=(15, 15))
 ax[0, 0].set_title('LinearSVM')
@@ -274,7 +262,7 @@ ax[1, 1].tick_params(labelsize=15)
 plt.savefig('output_plots/CM_others.png')
 
 plt.show()
-
+'''
 # For each algorithm, plot learning curve
 # Calculation
 
@@ -336,3 +324,4 @@ ax[1, 1].tick_params(labelsize=15)
 # Save plot to src/output_plots
 plt.savefig('output_plots/LC_others.png')
 plt.show()
+'''
