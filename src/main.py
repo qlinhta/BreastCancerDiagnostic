@@ -36,6 +36,8 @@ plt.scatter(X_train[y_train == 1]['smoothness_mean_log'], X_train[y_train == 1][
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
+# Save the plot to src/output_plots
+plt.savefig('output_plots/dataset.png')
 plt.show()
 
 # Tuning the hyperparameters
@@ -73,6 +75,8 @@ plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
+# Save the plot to src/output_plots
+plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
@@ -97,6 +101,8 @@ for i in range(len(y_test)):
     if y_test.iloc[i] != y_pred[i]:
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
+# Save the plot to src/output_plots
+plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
 # Investigate the misclassified points

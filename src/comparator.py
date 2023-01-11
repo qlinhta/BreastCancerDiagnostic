@@ -171,6 +171,8 @@ ax[1, 1].scatter(X_test[y_test != cat_y_pred]['smoothness_mean_log'], X_test[y_t
 ax[1, 1].set_xlabel('Log Scale of Smoothness Mean')
 ax[1, 1].set_ylabel('Log Scale of Texture Mean')
 ax[1, 1].legend()
+# Save plot to src/output_plots
+plt.savefig('output_plots/Prediction_others.png')
 
 plt.show()
 
@@ -215,7 +217,8 @@ ax[1, 1].plot([0, 1], [0, 1], color='black', lw=1, linestyle='--')
 ax[1, 1].set_xlabel('False Positive Rate')
 ax[1, 1].set_ylabel('True Positive Rate')
 ax[1, 1].legend()
-
+# Save plot to src/output_plots
+plt.savefig('output_plots/ROC_others.png')
 plt.show()
 
 '''
@@ -267,6 +270,8 @@ for i in range(confusion_matrix(y_test, cat_y_pred).shape[0]):
 ax[1, 1].set_xlabel('Predicted label')
 ax[1, 1].set_ylabel('True label')
 ax[1, 1].tick_params(labelsize=15)
+# Save plot to src/output_plots
+plt.savefig('output_plots/CM_others.png')
 
 plt.show()
 
@@ -328,5 +333,6 @@ ax[1, 1].set_ylabel('Accuracy')
 ax[1, 1].legend(loc='lower right')
 ax[1, 1].grid()
 ax[1, 1].tick_params(labelsize=15)
-
+# Save plot to src/output_plots
+plt.savefig('output_plots/LC_others.png')
 plt.show()

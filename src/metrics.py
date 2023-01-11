@@ -62,6 +62,8 @@ def roc_curve(y, y_pred):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
     plt.legend(loc="lower right")
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/roc_curve.png')
     plt.show()
 
 
@@ -80,6 +82,8 @@ def precision_recall_curve(y, y_pred):
     plt.ylim([-0.05, 1.05])
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/precision_recall_curve.png')
     plt.show()
 
 
@@ -101,6 +105,8 @@ def confusion_matrix(y, y_pred):
     plt.ylabel('True label')
     plt.title('Confusion matrix')
     plt.tick_params(labelsize=15)
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/confusion_matrix.png')
     plt.show()
 
 
@@ -112,6 +118,8 @@ def loss_curve(losses):
     ax.set_ylabel('Loss')
     ax.tick_params(labelsize=15)
     ax.legend(loc='upper right')
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/loss_curve.png')
     plt.show()
 
 
@@ -123,6 +131,8 @@ def accuracy_curve(accuracies):
     ax.set_ylabel('Accuracy')
     ax.tick_params(labelsize=15)
     ax.legend(loc='lower right')
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/accuracy_curve.png')
     plt.show()
 
 
@@ -155,34 +165,6 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.yticks(np.arange(0.5, 1.05, 0.1))
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
-    plt.show()
-
-
-def learning_curve_svm(X_train, y_train, X_test, y_test, best_C, best_max_iter):
-    from sklearn.model_selection import learning_curve
-    from sklearn.svm import LinearSVC
-    train_sizes, train_scores, test_scores = learning_curve(LinearSVC(C=best_C, max_iter=best_max_iter), X_train,
-                                                            y_train,
-                                                            train_sizes=np.linspace(0.1, 1.0, 10), cv=10, n_jobs=-1)
-
-    train_mean = np.mean(train_scores, axis=1)
-    train_std = np.std(train_scores, axis=1)
-    test_mean = np.mean(test_scores, axis=1)
-    test_std = np.std(test_scores, axis=1)
-    set_size = 10
-
-    plt.subplots(figsize=(10, 8))
-    plt.title('Learning Curve Linear SVM')
-    plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=10, label='Training Accuracy')
-    plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')
-    plt.plot(train_sizes, test_mean, color='green', linestyle='--', marker='s', markersize=10,
-             label='Validation Accuracy')
-    plt.fill_between(train_sizes, test_mean + test_std, test_mean - test_std, alpha=0.15, color='green')
-    plt.grid()
-    plt.xlabel('Percentage of training set')
-    plt.ylabel('Accuracy')
-    # xtick is the percentage of training set
-    plt.xticks(train_sizes, [str(int(i * 100 / set_size)) + '%' for i in range(1, set_size + 1)])
-    plt.legend(loc='lower right')
-    plt.ylim([0.5, 1.05])
+    # Save plot to src/output_plots
+    plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()
