@@ -170,10 +170,3 @@ plt.title('SHAP Dependence Plot')
 # plt.savefig('output_plots/LR_shap_dependence_plot.png')
 plt.show()
 
-# With Eli5, show the weights of the features
-eli5.show_weights(model)
-
-# With Eli5, show the prediction of the model
-eli5.show_prediction(model, X_test.iloc[0])
-
-
