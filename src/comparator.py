@@ -260,8 +260,41 @@ ax[1, 1].set_ylabel('True label')
 ax[1, 1].tick_params(labelsize=15)
 # Save plot to src/output_plots
 plt.savefig('output_plots/CM_others.png')
-
 plt.show()
+
+# For each algorithm, plot precision-recall curve
+fig, ax = plt.subplots(2, 2, figsize=(15, 15))
+precision_svm, recall_svm, _ = precision_recall_curve(y_test, svm_y_pred)
+ax[0, 0].set_title('LinearSVM')
+ax[0, 0].plot(recall_svm, precision_svm, color='black', lw=1, label='Precision-Recall curve')
+ax[0, 0].set_xlabel('Recall')
+ax[0, 0].set_ylabel('Precision')
+ax[0, 0].legend()
+
+precision_xgb, recall_xgb, _ = precision_recall_curve(y_test, xgb_y_pred)
+ax[0, 1].set_title('XGBoost')
+ax[0, 1].plot(recall_xgb, precision_xgb, color='black', lw=1, label='Precision-Recall curve')
+ax[0, 1].set_xlabel('Recall')
+ax[0, 1].set_ylabel('Precision')
+ax[0, 1].legend()
+
+precision_rf, recall_rf, _ = precision_recall_curve(y_test, rf_y_pred)
+ax[1, 0].set_title('Random Forest')
+ax[1, 0].plot(recall_rf, precision_rf, color='black', lw=1, label='Precision-Recall curve')
+ax[1, 0].set_xlabel('Recall')
+ax[1, 0].set_ylabel('Precision')
+ax[1, 0].legend()
+
+precision_cat, recall_cat, _ = precision_recall_curve(y_test, cat_y_pred)
+ax[1, 1].set_title('CatBoost')
+ax[1, 1].plot(recall_cat, precision_cat, color='black', lw=1, label='Precision-Recall curve')
+ax[1, 1].set_xlabel('Recall')
+ax[1, 1].set_ylabel('Precision')
+ax[1, 1].legend()
+# Save plot to src/output_plots
+plt.savefig('output_plots/PR_others.png')
+plt.show()
+
 '''
 # For each algorithm, plot learning curve
 # Calculation

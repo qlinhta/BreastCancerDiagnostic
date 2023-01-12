@@ -1,7 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import lime.lime_tabular
+import lime.lime_image
 import warnings
+
+import shap
 
 plt.style.use('seaborn-paper')
 plt.rc('text', usetex=True)
@@ -105,12 +109,17 @@ for i in range(len(y_test)):
 plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
-# Investigate the misclassified points
-misclassified = X_test[y_test != y_pred]
-misclassified['diagnosis'] = y_test[y_test != y_pred]
-misclassified['predicted_diagnosis'] = y_pred[y_test != y_pred]
-print(misclassified)
-
 # Print best hyperparameters
 print(f'Best learning rate: {best_learning_rate}')
 print(f'Best max iter: {best_max_iter}')
+
+misclassified = X_test[y_pred != y_test]
+
+explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns,
+                                                   class_names=['Benign', 'Malignant'],
+                                                   discretize_continuous=True, verbose=True, mode='classification')
+for i in misclassified.index:
+    exp = explainer.explain_instance(X_test.loc[i].values, model.predict_proba, num_features=10)
+    exp.show_in_notebook(show_table=True, show_all=True)
+    exp.save_to_file('logistic_missed_predict_investigate/' + str(i) + '.html')
+

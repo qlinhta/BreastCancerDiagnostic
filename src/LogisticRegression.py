@@ -61,6 +61,12 @@ class LogisticRegression:
         y_pred = self._sigmoid(z)
         return np.round(y_pred)
 
+    def predict_proba(self, X):
+        # Make result return as sklearn
+        z = np.dot(X, self.weights) + self.bias
+        y_pred = self._sigmoid(z)
+        return np.array([1 - y_pred, y_pred]).T # Return the probability of 0 and 1
+
 
 def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
     X_folds = np.array_split(X, k)
