@@ -123,3 +123,30 @@ for i in misclassified.index:
     exp.show_in_notebook(show_table=True, show_all=True)
     exp.save_to_file('logistic_missed_predict_investigate/' + str(i) + '.html')
 
+# In the same plot, plot the probability of being malignant or benign for each feature
+fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+ax[0].set_title('Probability of being Benign')
+ax[0].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 0])[:, 0], marker='o',
+              label='Benign', s=100, edgecolors='blue', facecolors='white')
+ax[0].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 1])[:, 0], marker='v',
+              label='Malignant', s=100, edgecolors='red', facecolors='red')
+ax[0].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba(X_test[y_pred != y_test])[:, 0],
+              marker='x', label='Misclassified', s=100, edgecolors='black', facecolors='black')
+ax[0].set_xlabel('Log Scale of Smoothness Mean')
+ax[0].set_ylabel('Probability of being Benign')
+ax[0].legend()
+
+ax[1].set_title('Probability of being Malignant')
+ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 0])[:, 1], marker='o',
+              label='Benign', s=100, edgecolors='blue', facecolors='white')
+ax[1].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 1])[:, 1], marker='v',
+              label='Malignant', s=100, edgecolors='red', facecolors='red')
+ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba(X_test[y_pred != y_test])[:, 1],
+              marker='x', label='Misclassified', s=100, edgecolors='black', facecolors='black')
+ax[1].set_xlabel('Log Scale of Smoothness Mean')
+ax[1].set_ylabel('Probability of being Malignant')
+ax[1].legend()
+# Save the plot to src/output_plots
+plt.savefig('output_plots/LR_probability.png')
+plt.show()
+
