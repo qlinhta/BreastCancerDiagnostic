@@ -139,7 +139,7 @@ def accuracy_curve(accuracies):
 def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter):
     train_score = []
     test_score = []
-    size_set = 5
+    size_set = 10
     for i in range(1, size_set + 1):
         # Get the training data
         X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
@@ -152,10 +152,10 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
         test_score.append(accuracy(y_test, model.predict(X_test)))
     fig, ax = plt.subplots(figsize=(10, 8))
     plt.title('Learning curve of Logistic Regression model')
-    plt.plot(train_score, label='Training score', linewidth=1, color='blue', marker='v', markersize=15)
+    plt.plot(train_score, label='Training score', linewidth=1, color='blue', marker='v', markersize=10)
     plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
                      np.array(train_score) + np.std(train_score), alpha=0.1, color='blue')
-    plt.plot(test_score, label='Test score', linewidth=1, color='green', marker='o', linestyle='--', markersize=15)
+    plt.plot(test_score, label='Test score', linewidth=1, color='green', marker='o', linestyle='--', markersize=10)
     plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
                      np.array(test_score) + np.std(test_score), alpha=0.1, color='green')
     plt.xlabel('Percentage of training set')
