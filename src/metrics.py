@@ -63,7 +63,7 @@ def roc_curve(y, y_pred):
     plt.title('Receiver Operating Characteristic')
     plt.legend(loc="lower right")
     # Save plot to src/output_plots
-    plt.savefig('output_plots/roc_curve.png')
+    # plt.savefig('output_plots/roc_curve.png')
     plt.show()
 
 
@@ -83,7 +83,7 @@ def precision_recall_curve(y, y_pred):
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
     # Save plot to src/output_plots
-    plt.savefig('output_plots/precision_recall_curve.png')
+    # plt.savefig('output_plots/precision_recall_curve.png')
     plt.show()
 
 
@@ -106,7 +106,7 @@ def confusion_matrix(y, y_pred):
     plt.title('Confusion matrix')
     plt.tick_params(labelsize=15)
     # Save plot to src/output_plots
-    plt.savefig('output_plots/confusion_matrix.png')
+    # plt.savefig('output_plots/confusion_matrix.png')
     plt.show()
 
 
@@ -119,7 +119,7 @@ def loss_curve(losses):
     ax.tick_params(labelsize=15)
     ax.legend(loc='upper right')
     # Save plot to src/output_plots
-    plt.savefig('output_plots/loss_curve.png')
+    # plt.savefig('output_plots/loss_curve.png')
     plt.show()
 
 
@@ -132,7 +132,7 @@ def accuracy_curve(accuracies):
     ax.tick_params(labelsize=15)
     ax.legend(loc='lower right')
     # Save plot to src/output_plots
-    plt.savefig('output_plots/accuracy_curve.png')
+    # plt.savefig('output_plots/accuracy_curve.png')
     plt.show()
 
 
@@ -166,5 +166,5 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
     # Save plot to src/output_plots
-    plt.savefig('output_plots/learning_curve_lr.png')
+    # plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()

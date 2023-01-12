@@ -1,3 +1,4 @@
+import eli5
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -76,12 +77,12 @@ plt.scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['tex
 plt.scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
             label='Malignant', s=100, edgecolors='red', facecolors='red')
 plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_test]['texture_mean_log'], marker='x',
-            label='Missclassified', s=100, edgecolors='black', facecolors='black')
+            label='Misclassified', s=100, edgecolors='black', facecolors='black')
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
 # Save the plot to src/output_plots
-plt.savefig('output_plots/LR_predicted_labels.png')
+# plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
@@ -107,7 +108,7 @@ for i in range(len(y_test)):
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
 # Save the plot to src/output_plots
-plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
+# plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
 # Print best hyperparameters
@@ -145,7 +146,7 @@ ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_pro
 ax[1].set_xlabel('Log Scale of Smoothness Mean')
 ax[1].set_ylabel('Probability of being Malignant')
 ax[1].legend()
-plt.savefig('output_plots/LR_probability.png')
+# plt.savefig('output_plots/LR_probability.png')
 plt.show()
 
 # Save the model to output_models
@@ -154,17 +155,25 @@ plt.show()
 shape_explainer = shap.KernelExplainer(model.predict_proba, X_train)
 shap_values = shape_explainer.shap_values(X_test, nsamples=100)
 shap.summary_plot(shap_values, X_test, plot_type='bar', show=False)
-plt.savefig('output_plots/LR_shap_summary_plot.png')
+# plt.savefig('output_plots/LR_shap_summary_plot.png')
 plt.show()
 
 # Plot the shap decision plot
 shap.decision_plot(shape_explainer.expected_value[1], shap_values[1], X_test, show=False)
 plt.title('SHAP Decision Plot')
-plt.savefig('output_plots/LR_shap_decision_plot.png')
+# plt.savefig('output_plots/LR_shap_decision_plot.png')
 plt.show()
 
 # Plot dependence plot
 shap.dependence_plot('texture_mean_log', shap_values[1], X_test, show=False)
 plt.title('SHAP Dependence Plot')
-plt.savefig('output_plots/LR_shap_dependence_plot.png')
+# plt.savefig('output_plots/LR_shap_dependence_plot.png')
 plt.show()
+
+# With Eli5, show the weights of the features
+eli5.show_weights(model)
+
+# With Eli5, show the prediction of the model
+eli5.show_prediction(model, X_test.iloc[0])
+
+
