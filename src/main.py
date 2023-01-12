@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -147,3 +148,6 @@ ax[1].set_ylabel('Probability of being Malignant')
 ax[1].legend()
 plt.savefig('output_plots/LR_probability.png')
 plt.show()
+
+# Save the model to output_models
+joblib.dump(model, 'output_models/LR_model.pkl')
