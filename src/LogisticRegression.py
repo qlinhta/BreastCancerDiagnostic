@@ -65,7 +65,7 @@ class LogisticRegression:
         # Make result return as sklearn
         z = np.dot(X, self.weights) + self.bias
         y_pred = self._sigmoid(z)
-        return np.array([1 - y_pred, y_pred]).T # Return the probability of 0 and 1
+        return np.round(np.array([1 - y_pred, y_pred]).T, 2)
 
 
 def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
