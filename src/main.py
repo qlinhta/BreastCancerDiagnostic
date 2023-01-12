@@ -135,7 +135,6 @@ ax[0].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_pro
 ax[0].set_xlabel('Log Scale of Smoothness Mean')
 ax[0].set_ylabel('Probability of being Benign')
 ax[0].legend()
-
 ax[1].set_title('Probability of being Malignant')
 ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 0])[:, 1], marker='o',
               label='Benign', s=100, edgecolors='blue', facecolors='white')
@@ -150,4 +149,4 @@ plt.savefig('output_plots/LR_probability.png')
 plt.show()
 
 # Save the model to output_models
-joblib.dump(model, 'output_models/LR_model.pkl')
+# joblib.dump(model, 'output_models/LR_model.pkl')
