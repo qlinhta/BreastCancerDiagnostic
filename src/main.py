@@ -158,18 +158,6 @@ shap.summary_plot(shap_values, X_test, plot_type='bar', show=False)
 plt.savefig('output_plots/LR_shap_summary_plot.png')
 plt.show()
 
-shap.KernelExplainer(model.predict_proba, X_train)
-shap_values = shape_explainer.shap_values(X_test.loc[misclassified.index[0]])
-shap.force_plot(shape_explainer.expected_value[1], shap_values[1], X_test.loc[misclassified.index[0]], matplotlib=True,
-                show=True)
-plt.savefig('output_plots/LR_first_missed.png')
-plt.show()
-shap_values = shape_explainer.shap_values(X_test.loc[misclassified.index[1]])
-shap.force_plot(shape_explainer.expected_value[1], shap_values[1], X_test.loc[misclassified.index[1]], matplotlib=True,
-                show=True)
-plt.savefig('output_plots/LR_second_missed.png')
-plt.show()
-
 # For each misclassified sample, plot the shap values with waterfall plot
 for i in misclassified.index:
     shap_values = shape_explainer.shap_values(X_test.loc[i])
