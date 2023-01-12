@@ -160,6 +160,7 @@ plt.show()
 
 # For each misclassified sample, plot the shap values with waterfall plot
 for i in misclassified.index:
+    plt.title(f'Data sample {i}')
     shap_values = shape_explainer.shap_values(X_test.loc[i])
     shap.waterfall_plot(shap.Explanation(values=shap_values[1], base_values=shape_explainer.expected_value[1],
                                          data=X_test.loc[i]), show=False)
