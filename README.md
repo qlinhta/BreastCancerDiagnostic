@@ -23,18 +23,19 @@
 
 #### TODO:
 
-* [x] Implement LDA
-* [x] Implement Logistic Regression
+* [x] Implement `LDA`
+* [x] Implement `Logistic Regression`
 * [x] Understand the data and comprehend the problem
-* [x] Data analysis with visualization in R, Python
+* [x] Data analysis with visualization in `R`, `Python`
 * [x] Implement the statistical analysis for transformation of data
-* [x] About outliers? (remove or not?)
-* [x] Implement data transformation and feature engineering
+* [x] Outliers detection and investigation
+* [x] Implement data transformation
 * [x] Implement model evaluation, metrics, and hyperparameter tuning
-* [x] Test the LDA and Logistic Regression models with post-processing data
-* [x] Test the LDA and Logistic Regression models with pre-processing data
-* [x] Tuning the hyperparameters of Logistic Regression
-* [x] Evaluate the models and implement SVM, Random Forest, XGBoost and CatBoost
+* [x] Test the `LDA` and `Logistic Regression` models with post-processing data
+* [x] Test the `LDA` and `Logistic Regression` models with pre-processing data
+* [x] Tuning the hyperparameters of `Logistic Regression`
+* [x] Misclassified data analysis
+* [x] Evaluate the models and implement `SVM`, `Gaussian Naive Bayes`, `XGBoost` and `CatBoost`
 * [x] Implement the ensemble model and compare the results
 * [x] Interpret the results
 * [ ] Write the report
