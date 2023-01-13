@@ -7,7 +7,8 @@
 
 #### Description:
 
-* This project is a part of the course "Machine Learning" at [University Paris Dauphine, PSL](http://dauphine.eu).
+* This project is a part of the course "Machine Learning"
+  at [University Paris Dauphine, PSL](https://dauphine.psl.eu/en/).
 
 #### Content:
 
