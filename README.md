@@ -16,6 +16,6 @@
 
 #### Execution:
 
-* Requirements: `{Python 3.6, pip, virtualenv or conda}`
-* Setup environment packages: `pip install -r requirements.txt`
+* Requirements: `Python 3.6`, `pip`, `virtualenv` or `conda`
+* Setup necessary packages: `pip install -r requirements.txt`
 * Main file to run: `python src/main.py` or notebook `Notebooks/*.ipynb`
