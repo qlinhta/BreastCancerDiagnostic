@@ -3,6 +3,7 @@ import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 import lime.lime_tabular
 import lime.lime_image
 import warnings
@@ -164,9 +165,47 @@ plt.title('SHAP Decision Plot')
 # plt.savefig('output_plots/LR_shap_decision_plot.png')
 plt.show()
 
-# Plot dependence plot
-shap.dependence_plot('texture_mean_log', shap_values[1], X_test, show=False)
-plt.title('SHAP Dependence Plot')
+# Plot dependence plot for 4 most important features
+fig, ax = plt.subplots(2, 2, figsize=(20, 10))
+shap.dependence_plot('smoothness_mean_log', shap_values[1], X_test, show=False, ax=ax[0, 0])
+shap.dependence_plot('texture_mean_log', shap_values[1], X_test, show=False, ax=ax[0, 1])
+shap.dependence_plot('area_mean_log', shap_values[1], X_test, show=False, ax=ax[1, 0])
+shap.dependence_plot('concavity_mean_log', shap_values[1], X_test, show=False, ax=ax[1, 1])
 # plt.savefig('output_plots/LR_shap_dependence_plot.png')
 plt.show()
 
+# Density chart for two class
+fig, ax = plt.subplots(figsize=(20, 10))
+# Plot line dash for misclassified
+sns.kdeplot(X_test[y_test == 0]['smoothness_mean_log'], label='Benign', shade=True)
+sns.kdeplot(X_test[y_test == 1]['smoothness_mean_log'], label='Malignant', shade=True)
+plt.title('Density Chart for Smoothness Mean')
+plt.xlabel('Log Scale of Smoothness Mean')
+plt.ylabel('Density')
+# plt.savefig('output_plots/LR_density_chart.png')
+plt.show()
+
+# Density chart for two class with scale of 4 most important features
+fig, ax = plt.subplots(2, 2, figsize=(20, 10))
+sns.kdeplot(X_test[y_test == 0]['smoothness_mean_log'], label='Benign', shade=True, ax=ax[0, 0])
+sns.kdeplot(X_test[y_test == 1]['smoothness_mean_log'], label='Malignant', shade=True, ax=ax[0, 0])
+ax[0, 0].set_title('Smoothness Mean')
+ax[0, 0].set_xlabel('Log Scale of Smoothness Mean')
+ax[0, 0].set_ylabel('Density')
+sns.kdeplot(X_test[y_test == 0]['texture_mean_log'], label='Benign', shade=True, ax=ax[0, 1])
+sns.kdeplot(X_test[y_test == 1]['texture_mean_log'], label='Malignant', shade=True, ax=ax[0, 1])
+ax[0, 1].set_title('Texture Mean')
+ax[0, 1].set_xlabel('Log Scale of Texture Mean')
+ax[0, 1].set_ylabel('Density')
+sns.kdeplot(X_test[y_test == 0]['area_mean_log'], label='Benign', shade=True, ax=ax[1, 0])
+sns.kdeplot(X_test[y_test == 1]['area_mean_log'], label='Malignant', shade=True, ax=ax[1, 0])
+ax[1, 0].set_title('Area Mean')
+ax[1, 0].set_xlabel('Log Scale of Area Mean')
+ax[1, 0].set_ylabel('Density')
+sns.kdeplot(X_test[y_test == 0]['concavity_mean_log'], label='Benign', shade=True, ax=ax[1, 1])
+sns.kdeplot(X_test[y_test == 1]['concavity_mean_log'], label='Malignant', shade=True, ax=ax[1, 1])
+ax[1, 1].set_title('Concavity Mean')
+ax[1, 1].set_xlabel('Log Scale of Concavity Mean')
+ax[1, 1].set_ylabel('Density')
+# plt.savefig('output_plots/LR_density_chart_4_features.png')
+plt.show()
