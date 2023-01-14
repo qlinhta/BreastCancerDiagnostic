@@ -75,8 +75,28 @@ class LogisticRegression:
         y_pred = self._sigmoid(z)
         return np.round(np.array([1 - y_pred, y_pred]).T, 2)
 
+    def cross_validation(self, X, y, n_splits=5):
+        # Split the dataset into n_splits
+        X_split = np.array_split(X, n_splits)
+        y_split = np.array_split(y, n_splits)
+        accuracy_list = []
+        # Start the cross validation
+        for i in range(n_splits):
+            # Get the test set
+            X_test = X_split[i]
+            y_test = y_split[i]
+            # Get the train set
+            X_train = np.concatenate(X_split[:i] + X_split[i + 1:])
+            y_train = np.concatenate(y_split[:i] + y_split[i + 1:])
+            # Train the model
+            self.fit(X_train, y_train)
+            # Get the accuracy
+            accuracy = metrics.accuracy(y_test, self.predict(X_test))
+            accuracy_list.append(accuracy)
+        return np.mean(accuracy_list)
 
-def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
+
+def _tuning(X, y, learning_rates, max_iters, k=10, verbose=True):
     assert len(X) == len(y), "Need to have same number of samples for X and y"
     assert k > 0, "k needs to be positive"
     assert k < len(X), "k needs to be less than number of samples"
@@ -84,35 +104,20 @@ def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
     assert len(learning_rates) > 0, "Need to have at least one learning rate"
     assert len(max_iters) > 0, "Need to have at least one max iter"
 
-    X_folds = np.array_split(X, k)
-    y_folds = np.array_split(y, k)
-
+    # Tuning hyperparameters using cross validation
     best_accuracy = 0
     best_learning_rate = None
     best_max_iter = None
-
     for learning_rate in learning_rates:
         for max_iter in max_iters:
-            model = LogisticRegression(learning_rate=learning_rate, max_iter=max_iter, verbose=verbose)
-            accuracies = []
-            for i in range(k):
-                # Get the training data
-                X_train = np.concatenate(X_folds[:i] + X_folds[i + 1:])
-                y_train = np.concatenate(y_folds[:i] + y_folds[i + 1:])
-                X_val = X_folds[i]
-                y_val = y_folds[i]
-
-                try:
-                    model.fit(X_train, y_train)
-                    y_pred = model.predict(X_val)
-                    accuracies.append(metrics.accuracy(y_val, y_pred))
-                except Exception as e:
-                    print("Error during cross validation: {}".format(e))
-
-            accuracy = np.mean(accuracies)
+            model = LogisticRegression(learning_rate, max_iter, verbose=False, random_state=42)
+            accuracy_list = model.cross_validation(X, y, k)
+            accuracy = np.mean(accuracy_list)
             if accuracy > best_accuracy:
                 best_accuracy = accuracy
                 best_learning_rate = learning_rate
                 best_max_iter = max_iter
-
+            if verbose:
+                print(
+                    f'Learning rate: {learning_rate}, max iter: {max_iter}, accuracy: {accuracy:.4f}')
     return best_learning_rate, best_max_iter, best_accuracy

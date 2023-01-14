@@ -19,10 +19,17 @@ def log_transformation(df, columns):
     :param columns: columns to be transformed
     :return: log transformation for each column
     '''
+    # Check that the columns are in the DataFrame
+    if not set(columns).issubset(df.columns):
+        raise ValueError("One or more columns not found in the dataframe.")
+    
+    # Check that the columns are numeric
+    if not all(df[col].dtype in (int, float) for col in columns):
+        raise ValueError("One or more columns are not numeric.")
+    
+    # Log transform the columns
     for column in columns:
-        # Add a new column to the dataframe
         df[column + '_log'] = np.log(df[column])
-        # Drop the original column
         df.drop(column, axis=1, inplace=True)
     return df
 
@@ -56,12 +63,16 @@ def square_root_transformation(df, columns):
     :param columns: columns to be transformed
     :return: square root transformation for each column
     '''
-    for column in columns:
-        # Add a new column to the dataframe
-        df[column + '_sqrt'] = np.sqrt(df[column])
-        # Drop the original column
-        df.drop(column, axis=1, inplace=True)
-    return df
+    try:
+        for column in columns:
+            # Add a new column to the dataframe
+            df[column + '_sqrt'] = np.sqrt(df[column])
+            # Drop the original column
+            df.drop(column, axis=1, inplace=True)
+        return df
+    except Exception as e:
+        print(e)
+        return df
 
 
 def test_square_root_transform(df):
@@ -93,6 +104,12 @@ def cube_root_transformation(df, columns):
     :param columns: columns to be transformed
     :return: cube root transformation for each column
     '''
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError('df must be a pandas dataframe')
+    if not isinstance(columns, list):
+        raise TypeError('columns must be a list')
+    if columns == []:
+        raise ValueError('columns must not be an empty list')
     for column in columns:
         # Add a new column to the dataframe
         df[column + '_cbrt'] = np.cbrt(df[column])

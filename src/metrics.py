@@ -81,7 +81,7 @@ def roc_curve(y, y_pred):
     plt.title('Receiver Operating Characteristic')
     plt.legend(loc="lower right")
     # Save plot to src/output_plots
-    # plt.savefig('output_plots/roc_curve.png')
+    plt.savefig('output_plots/roc_curve.png')
     plt.show()
 
 
@@ -132,8 +132,9 @@ def confusion_matrix(y, y_pred):
     plt.title('Confusion matrix')
     plt.tick_params(labelsize=15)
     # Save plot to src/output_plots
-    # plt.savefig('output_plots/confusion_matrix.png')
+    plt.savefig('output_plots/confusion_matrix.png')
     plt.show()
+
 
 def loss_curve(losses):
     try:
@@ -145,10 +146,11 @@ def loss_curve(losses):
         ax.tick_params(labelsize=15)
         ax.legend(loc='upper right')
         # Save plot to src/output_plots
-        # plt.savefig('output_plots/loss_curve.png')
+        plt.savefig('output_plots/loss_curve.png')
         plt.show()
     except Exception as e:
         print("Error: ", e)
+
 
 def accuracy_curve(accuracies):
     try:
@@ -160,7 +162,7 @@ def accuracy_curve(accuracies):
         ax.tick_params(labelsize=15)
         ax.legend(loc='lower right')
         # Save plot to src/output_plots
-        # plt.savefig('output_plots/accuracy_curve.png')
+        plt.savefig('output_plots/accuracy_curve.png')
         plt.show()
     except Exception as e:
         print("Error: ", e)
@@ -168,7 +170,7 @@ def accuracy_curve(accuracies):
 
 def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter):
     train_score = []
-    test_score = []
+    cross_val_score = []
     size_set = 10
     for i in range(1, size_set + 1):
         # Get the training data
@@ -177,17 +179,19 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
         # Train the model
         model = LogisticRegression.LogisticRegression(learning_rate=learning_rate, max_iter=max_iter)
         model.fit(X_train_, y_train_)
-        # Compute the accuracy
+        # Get the training score
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
-        test_score.append(accuracy(y_test, model.predict(X_test)))
+        # Get the cross validation score
+        cross_val_score.append(accuracy(y_test, model.predict(X_test)))
+    # Plot the learning curve
     fig, ax = plt.subplots(figsize=(10, 8))
     plt.title('Learning curve of Logistic Regression model')
     plt.plot(train_score, label='Training score', linewidth=1, color='blue', marker='v', markersize=10)
     plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
                      np.array(train_score) + np.std(train_score), alpha=0.1, color='blue')
-    plt.plot(test_score, label='Test score', linewidth=1, color='green', marker='o', linestyle='--', markersize=10)
-    plt.fill_between(range(len(test_score)), np.array(test_score) - np.std(test_score),
-                     np.array(test_score) + np.std(test_score), alpha=0.1, color='green')
+    plt.plot(cross_val_score, label='Cross validation score', linewidth=1, color='green', marker='o', linestyle='--', markersize=10)
+    plt.fill_between(range(len(cross_val_score)), np.array(cross_val_score) - np.std(cross_val_score),
+                     np.array(cross_val_score) + np.std(cross_val_score), alpha=0.1, color='green')
     plt.xlabel('Percentage of training set')
     plt.ylabel('Accuracy')
     plt.ylim(0.5, 1.05)
@@ -196,5 +200,5 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.legend()
     plt.grid()
     # Save plot to src/output_plots
-    # plt.savefig('output_plots/learning_curve_lr.png')
+    plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()

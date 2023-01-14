@@ -52,9 +52,9 @@ plt.show()
 learning_rates = [0.001, 0.01, 0.1, 1, 5, 10]
 max_iters = [100, 200, 400, 500, 1000, 1500]
 
-'''best_learning_rate, best_max_iter, best_accuracy = LogisticRegression.cross_validation_lr(X_train, y_train,
-                                                                                          learning_rates, max_iters,
-                                                                                          k=10, verbose=True)'''
+'''best_learning_rate, best_max_iter, best_accuracy = LogisticRegression._tuning(X_train, y_train,
+                                                                              learning_rates, max_iters,
+                                                                              k=10, verbose=True)'''
 best_learning_rate, best_max_iter = 5, 1000
 model = LogisticRegression.LogisticRegression(learning_rate=best_learning_rate, max_iter=best_max_iter, verbose=True)
 model.fit(X_train, y_train)
@@ -84,7 +84,7 @@ plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
 # Save the plot to src/output_plots
-# plt.savefig('output_plots/LR_predicted_labels.png')
+plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
@@ -110,7 +110,7 @@ for i in range(len(y_test)):
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
 # Save the plot to src/output_plots
-# plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
+plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
 # Print best hyperparameters
@@ -148,21 +148,20 @@ ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_pro
 ax[1].set_xlabel('Log Scale of Smoothness Mean')
 ax[1].set_ylabel('Probability of being Malignant')
 ax[1].legend()
-# plt.savefig('output_plots/LR_probability.png')
+plt.savefig('output_plots/LR_probability.png')
 plt.show()
 
-
 # Save the model to output_models
-# joblib.dump(model, 'output_models/LR_model.pkl')
+joblib.dump(model, 'output_models/LR_model.pkl')
 
 shape_explainer = shap.KernelExplainer(model.predict_proba, X_train)
 shap_values = shape_explainer.shap_values(X_test, nsamples=100)
 shap.summary_plot(shap_values, X_test, plot_type='bar', show=False)
-# plt.savefig('output_plots/LR_shap_summary_plot.png')
+plt.savefig('output_plots/LR_shap_summary_plot.png')
 plt.show()
 
 # Plot the shap decision plot
 shap.decision_plot(shape_explainer.expected_value[1], shap_values[1], X_test, show=False)
 plt.title('Decision process plot')
-# plt.savefig('output_plots/LR_shap_decision_plot.png')
+plt.savefig('output_plots/LR_shap_decision_plot.png')
 plt.show()
