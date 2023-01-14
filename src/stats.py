@@ -78,11 +78,15 @@ def chebyshev_inequality(df):
 # Estimate interval of confidence for each feature of X
 
 def interval_confidence(data, alpha):
+    if len(data) <= 1:
+        raise ValueError("data must have at least two values")
+    if alpha < 0 or alpha > 1:
+        raise ValueError("alpha must be between 0 and 1")
     z = stats.norm.ppf(1 - alpha / 2)
     mean = data.mean()
     std = data.std()
     n = len(data)
-    return mean - z * std / np.sqrt(n), mean + z * std / np.sqrt(n)
+    return mean - z * std / np.sqrt(n), mean + z * np.sqrt(n)
 
 
 def estimate_interval_of_confidence(df):
@@ -109,10 +113,14 @@ def local_outlier_factor(df, n_neighbors, contamination, threshold):
     :return: threshold, scores, index_of_outliers: The local outlier factor of each input samples. The lower, the more normal
     """
     from sklearn.neighbors import LocalOutlierFactor
-    lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
-    y_pred = lof.fit_predict(df)
-    scores = lof.negative_outlier_factor_
-    # with threshold
-    index_of_outliers = np.where(scores < threshold)
-    index_of_outliers = list(index_of_outliers[0])
+    try:
+        lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
+        y_pred = lof.fit_predict(df)
+        scores = lof.negative_outlier_factor_
+        # with threshold
+        index_of_outliers = np.where(scores < threshold)
+        index_of_outliers = list(index_of_outliers[0])
+    except Exception as e:
+        print('Error in Local Outlier Factor: ', e)
+        return None, None, None
     return threshold, scores, index_of_outliers

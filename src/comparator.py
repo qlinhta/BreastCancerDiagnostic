@@ -1,3 +1,4 @@
+import eli5
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -69,12 +70,24 @@ xgb_model = XGBClassifier(learning_rate=0.1, max_depth=7, n_estimators=100)
 xgb_model.fit(X_train, y_train)
 xgb_y_pred = xgb_model.predict(X_test)
 
-# Naive Bayes
-from sklearn.naive_bayes import GaussianNB
+# AdaBoost
+from sklearn.ensemble import AdaBoostClassifier
 
-nb_model = GaussianNB()
-nb_model.fit(X_train, y_train)
-nb_y_pred = nb_model.predict(X_test)
+'''
+params_ada = {
+    'learning_rate': [0.001, 0.01, 0.1, 0.2, 0.3, 0.5],
+    'n_estimators': [100, 200, 400, 500, 1000, 1500]
+}
+ada = AdaBoostClassifier()
+ada_grid = GridSearchCV(ada, params_ada, cv=10, verbose=True)
+ada_grid.fit(X_train, y_train)
+
+ada_best_learning_rate = ada_grid.best_params_['learning_rate']
+ada_best_n_estimators = ada_grid.best_params_['n_estimators']
+'''
+ada_model = AdaBoostClassifier(learning_rate=0.1, n_estimators=100)
+ada_model.fit(X_train, y_train)
+ada_y_pred = ada_model.predict(X_test)
 
 # CatBoost
 from catboost import CatBoostClassifier
@@ -99,7 +112,7 @@ cat_y_pred = cat_model.predict(X_test)
 # Print the results
 print(f'LinearSVM Accuracy: {accuracy_score(y_test, svm_y_pred)}')
 print(f'XGBoost Accuracy: {accuracy_score(y_test, xgb_y_pred)}')
-print(f'Naive Bayes Accuracy: {accuracy_score(y_test, nb_y_pred)}')
+print(f'AdaBoost Accuracy: {accuracy_score(y_test, ada_y_pred)}')
 print(f'CatBoost Accuracy: {accuracy_score(y_test, cat_y_pred)}')
 
 # For each algorithm, plot predicted labels and true labels
@@ -132,15 +145,14 @@ ax[0, 1].set_xlabel('Log Scale of Smoothness Mean')
 ax[0, 1].set_ylabel('Log Scale of Texture Mean')
 ax[0, 1].legend()
 
-ax[1, 0].set_title('Gaussian Naive Bayes')
-ax[1, 0].scatter(X_test[nb_y_pred == 0]['smoothness_mean_log'], X_test[nb_y_pred == 0]['texture_mean_log'],
+ax[1, 0].set_title('AdaBoost')
+ax[1, 0].scatter(X_test[ada_y_pred == 0]['smoothness_mean_log'], X_test[ada_y_pred == 0]['texture_mean_log'],
                  marker='o',
                  label='Benign', s=100, edgecolors='red', facecolors='white')
-ax[1, 0].scatter(X_test[nb_y_pred == 1]['smoothness_mean_log'], X_test[nb_y_pred == 1]['texture_mean_log'],
+ax[1, 0].scatter(X_test[ada_y_pred == 1]['smoothness_mean_log'], X_test[ada_y_pred == 1]['texture_mean_log'],
                  marker='v',
                  label='Malignant', s=100, edgecolors='darkorange', facecolors='darkorange')
-ax[1, 0].scatter(X_test[y_test != nb_y_pred]['smoothness_mean_log'],
-                 X_test[y_test != nb_y_pred]['texture_mean_log'],
+ax[1, 0].scatter(X_test[y_test != ada_y_pred]['smoothness_mean_log'], X_test[y_test != ada_y_pred]['texture_mean_log'],
                  marker='x',
                  label='Incorrect', s=100, edgecolors='black', facecolors='black')
 ax[1, 0].set_xlabel('Log Scale of Smoothness Mean')
@@ -189,10 +201,10 @@ ax[0, 1].set_xlabel('False Positive Rate')
 ax[0, 1].set_ylabel('True Positive Rate')
 ax[0, 1].legend()
 
-fpr_rf, tpr_rf, _ = roc_curve(y_test, nb_y_pred)
-roc_auc_rf = auc(fpr_rf, tpr_rf)
-ax[1, 0].set_title('Gaussian Naive Bayes')
-ax[1, 0].plot(fpr_rf, tpr_rf, color='black', lw=1, label='ROC curve (area = %0.2f)' % roc_auc_rf)
+fpr_ada, tpr_ada, _ = roc_curve(y_test, ada_y_pred)
+roc_auc_ada = auc(fpr_ada, tpr_ada)
+ax[1, 0].set_title('AdaBoost')
+ax[1, 0].plot(fpr_ada, tpr_ada, color='black', lw=1, label='ROC curve (area = %0.2f)' % roc_auc_ada)
 ax[1, 0].plot([0, 1], [0, 1], color='black', lw=1, linestyle='--')
 ax[1, 0].set_xlabel('False Positive Rate')
 ax[1, 0].set_ylabel('True Positive Rate')
@@ -230,11 +242,11 @@ ax[0, 1].set_xlabel('Predicted label')
 ax[0, 1].set_ylabel('True label')
 ax[0, 1].tick_params(labelsize=15)
 
-ax[1, 0].set_title('Gaussian Naive Bayes')
-ax[1, 0].matshow(confusion_matrix(y_test, nb_y_pred), cmap=plt.cm.Greys, alpha=0.3)
-for i in range(confusion_matrix(y_test, nb_y_pred).shape[0]):
-    for j in range(confusion_matrix(y_test, nb_y_pred).shape[1]):
-        ax[1, 0].text(x=j, y=i, s=confusion_matrix(y_test, nb_y_pred)[i, j], va='center', ha='center')
+ax[1, 0].set_title('AdaBoost')
+ax[1, 0].matshow(confusion_matrix(y_test, ada_y_pred), cmap=plt.cm.Greys, alpha=0.3)
+for i in range(confusion_matrix(y_test, ada_y_pred).shape[0]):
+    for j in range(confusion_matrix(y_test, ada_y_pred).shape[1]):
+        ax[1, 0].text(x=j, y=i, s=confusion_matrix(y_test, ada_y_pred)[i, j], va='center', ha='center')
 ax[1, 0].set_xlabel('Predicted label')
 ax[1, 0].set_ylabel('True label')
 ax[1, 0].tick_params(labelsize=15)
@@ -267,9 +279,9 @@ ax[0, 1].set_xlabel('Recall')
 ax[0, 1].set_ylabel('Precision')
 ax[0, 1].legend()
 
-precision_nb, recall_nb, _ = precision_recall_curve(y_test, nb_y_pred)
-ax[1, 0].set_title('Gaussian Naive Bayes')
-ax[1, 0].plot(recall_nb, precision_nb, color='black', lw=1, label='Precision-Recall curve')
+precision_ada, recall_ada, _ = precision_recall_curve(y_test, ada_y_pred)
+ax[1, 0].set_title('AdaBoost')
+ax[1, 0].plot(recall_ada, precision_ada, color='black', lw=1, label='Precision-Recall curve')
 ax[1, 0].set_xlabel('Recall')
 ax[1, 0].set_ylabel('Precision')
 ax[1, 0].legend()
@@ -320,11 +332,11 @@ ax[0, 1].legend(loc='lower right')
 ax[0, 1].grid()
 ax[0, 1].tick_params(labelsize=15)
 
-ax[1, 0].set_title('Gaussian Naive Bayes')
-ax[1, 0].plot(train_sizes, np.mean(train_scores_rf, axis=1), color='blue', marker='o', markersize=5,
-              label='Training accuracy')
-ax[1, 0].plot(train_sizes, np.mean(test_scores_rf, axis=1), color='green', linestyle='--', marker='s', markersize=5,
-              label='Validation accuracy')
+ax[1, 0].set_title('AdaBoost')
+ax[1, 0].plot(train_sizes, np.mean(train_scores_nb, axis=1), color='blue', marker='o', markersize=5,
+                label='Training accuracy')
+ax[1, 0].plot(train_sizes, np.mean(test_scores_nb, axis=1), color='green', linestyle='--', marker='s', markersize=5,
+                label='Validation accuracy')
 ax[1, 0].set_xlabel('Number of training samples')
 ax[1, 0].set_ylabel('Accuracy')
 ax[1, 0].legend(loc='lower right')

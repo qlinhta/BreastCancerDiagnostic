@@ -37097,17 +37097,17 @@
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["Benign", "Malignant"], [0.24, 0.76]);
+            var pp = new lime.PredictProba(pp_svg, ["Benign", "Malignant"], [0.26, 0.74]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["Benign", "Malignant"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["area_worst > 0.38", 0.175159398455537], ["area_mean > 0.44", 0.14756229192374126], ["radius_worst > 0.48", 0.13676437105110315], ["0.07 < texture_worst_cbrt <= 0.71", 0.08628742442589303], ["symmetry_worst <= 0.18", -0.08196001104791202], ["perimeter_mean > 0.55", 0.07823629565939895], ["0.08 < smoothness_worst_log <= 0.65", 0.07234628086697888], ["0.22 < concave points_worst <= 0.34", -0.05217269479170764], ["fractal_dimension_mean <= 0.18", 0.03847407413523243], ["0.30 < compactness_mean_cbrt <= 0.41", 0.02437445815279115]], 1, exp_div);
+                exp.show([["area_worst > 0.38", 0.23130231133418144], ["radius_worst > 0.48", 0.16393302283910796], ["area_mean > 0.44", 0.11001767765073764], ["0.07 < texture_worst_cbrt <= 0.71", 0.08107080656293227], ["0.08 < smoothness_worst_log <= 0.65", 0.07367752044425992], ["fractal_dimension_mean <= 0.18", 0.06793061608166091], ["symmetry_worst <= 0.18", -0.06442768779044863], ["perimeter_mean > 0.55", 0.050930335303787225], ["0.22 < concave points_worst <= 0.34", -0.04452405379090455], ["radius_mean > 0.55", 0.043965105453729725]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["area_worst", "0.39", 0.175159398455537], ["area_mean", "0.51", 0.14756229192374126], ["radius_worst", "0.49", 0.13676437105110315], ["texture_worst_cbrt", "0.08", 0.08628742442589303], ["symmetry_worst", "0.16", -0.08196001104791202], ["perimeter_mean", "0.59", 0.07823629565939895], ["smoothness_worst_log", "0.19", 0.07234628086697888], ["concave points_worst", "0.31", -0.05217269479170764], ["fractal_dimension_mean", "0.13", 0.03847407413523243], ["compactness_mean_cbrt", "0.39", 0.02437445815279115]], 1, raw_div);
+            exp.show_raw_tabular([["area_worst", "0.39", 0.23130231133418144], ["radius_worst", "0.49", 0.16393302283910796], ["area_mean", "0.51", 0.11001767765073764], ["texture_worst_cbrt", "0.08", 0.08107080656293227], ["smoothness_worst_log", "0.19", 0.07367752044425992], ["fractal_dimension_mean", "0.13", 0.06793061608166091], ["symmetry_worst", "0.16", -0.06442768779044863], ["perimeter_mean", "0.59", 0.050930335303787225], ["concave points_worst", "0.31", -0.04452405379090455], ["radius_mean", "0.61", 0.043965105453729725]], 1, raw_div);
         
         </script>
         </body></html>

@@ -17,6 +17,7 @@ class LogisticRegression:
         self.accuracies = []
         self.weights_list = []
         self.bias_list = []
+        self.coef_ = None
 
     @staticmethod
     def _sigmoid(z):
@@ -24,19 +25,19 @@ class LogisticRegression:
 
     @staticmethod
     def _losses(y, y_pred):
-        loss = np.zeros(y.shape[0])
         return -np.mean(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
 
     def fit(self, X, y):
         np.random.seed(self.random_state)  # Set the random seed
-        self.bias = np.random.randn()
-        self.weights = np.random.randn(X.shape[1])
+
+        if self.weights is None:
+            self.weights = np.random.randn(X.shape[1])
+        if self.bias is None:
+            self.bias = np.random.randn()
 
         # Start training
         for i in range(self.max_iter):
             # Forward propagation
-            # TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
-            # This error is because the weights and bias are not initialized
             y_pred = self._sigmoid(np.dot(X, self.weights) + self.bias)
 
             # Compute the loss
@@ -51,24 +52,38 @@ class LogisticRegression:
             # Update the weights and the bias
             self.weights -= self.learning_rate * dw
             self.bias -= self.learning_rate * db
+
+            # Update coef_
+            self.coef_ = np.append(self.bias, self.weights)
+
             # Print the loss and the accuracy
             if self.verbose:
                 print(
                     f'Iteration: {i + 1}/{self.max_iter}, loss: {self.losses[-1]:.4f}, accuracy: {self.accuracies[-1]:.4f}')
 
     def predict(self, X):
+        if self.weights is None:
+            raise Exception("Model has not been trained yet")
         z = np.dot(X, self.weights) + self.bias
         y_pred = self._sigmoid(z)
         return np.round(y_pred)
 
     def predict_proba(self, X):
-        # Make result return as sklearn
+        if self.weights is None:
+            raise Exception("Model has not been trained yet")
         z = np.dot(X, self.weights) + self.bias
         y_pred = self._sigmoid(z)
         return np.round(np.array([1 - y_pred, y_pred]).T, 2)
 
 
 def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
+    assert len(X) == len(y), "Need to have same number of samples for X and y"
+    assert k > 0, "k needs to be positive"
+    assert k < len(X), "k needs to be less than number of samples"
+    assert k == int(k), "k needs to be an integer"
+    assert len(learning_rates) > 0, "Need to have at least one learning rate"
+    assert len(max_iters) > 0, "Need to have at least one max iter"
+
     X_folds = np.array_split(X, k)
     y_folds = np.array_split(y, k)
 
@@ -86,9 +101,13 @@ def cross_validation_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
                 y_train = np.concatenate(y_folds[:i] + y_folds[i + 1:])
                 X_val = X_folds[i]
                 y_val = y_folds[i]
-                model.fit(X_train, y_train)
-                y_pred = model.predict(X_val)
-                accuracies.append(metrics.accuracy(y_val, y_pred))
+
+                try:
+                    model.fit(X_train, y_train)
+                    y_pred = model.predict(X_val)
+                    accuracies.append(metrics.accuracy(y_val, y_pred))
+                except Exception as e:
+                    print("Error during cross validation: {}".format(e))
 
             accuracy = np.mean(accuracies)
             if accuracy > best_accuracy:

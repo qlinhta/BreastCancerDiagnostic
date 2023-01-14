@@ -22,16 +22,24 @@ from src import LogisticRegression
 
 
 def accuracy(y, y_pred):
+    if len(y) != len(y_pred):
+        raise ValueError('y and y_pred must have the same length')
     return np.sum(y == y_pred) / len(y)
 
 
 def precision(y, y_pred):
+    if np.sum(y_pred) == 0:
+        return 0
     tp = np.sum(y * y_pred)
     fp = np.sum((1 - y) * y_pred)
     return tp / (tp + fp)
 
 
 def recall(y, y_pred):
+    if len(y) != len(y_pred):
+        raise ValueError("y and y_pred must have the same length")
+    if len(y) == 0:
+        raise ValueError("y and y_pred must have at least 1 element")
     tp = np.sum(y * y_pred)
     fn = np.sum(y * (1 - y_pred))
     return tp / (tp + fn)
@@ -40,6 +48,8 @@ def recall(y, y_pred):
 def f1_score(y, y_pred):
     p = precision(y, y_pred)
     r = recall(y, y_pred)
+    if p + r == 0:
+        return 0
     return 2 * p * r / (p + r)
 
 
@@ -47,9 +57,17 @@ def classification_summary(y, y_pred):
     from sklearn.metrics import classification_report
     print('Classification report:')
     print(classification_report(y, y_pred))
+    print('Confusion matrix:')
+    print(confusion_matrix(y, y_pred))
 
 
 def roc_curve(y, y_pred):
+    if len(y) != len(y_pred):
+        raise ValueError("y and y_pred must have the same length")
+    if not all([i in [0, 1] for i in y]):
+        raise ValueError("y must only contain 0s and 1s")
+    if not all([i in [0, 1] for i in y_pred]):
+        raise ValueError("y_pred must only contain 0s and 1s")
     from sklearn.metrics import roc_curve, auc
     fpr, tpr, _ = roc_curve(y, y_pred)
     roc_auc = auc(fpr, tpr)
@@ -83,11 +101,19 @@ def precision_recall_curve(y, y_pred):
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
     # Save plot to src/output_plots
-    # plt.savefig('output_plots/precision_recall_curve.png')
+    plt.savefig('output_plots/precision_recall_curve.png')
     plt.show()
 
 
 def confusion_matrix(y, y_pred):
+    if len(y) != len(y_pred):
+        raise ValueError("y and y_pred must have the same length")
+    if len(y) == 0:
+        raise ValueError("y and y_pred must have at least 1 element")
+    if not all([i in [0, 1] for i in y]):
+        raise ValueError("y must only contain 0s and 1s")
+    if not all([i in [0, 1] for i in y_pred]):
+        raise ValueError("y_pred must only contain 0s and 1s")
     tn = np.sum((y == 0) & (y_pred == 0))
     fp = np.sum((y == 0) & (y_pred == 1))
     fn = np.sum((y == 1) & (y_pred == 0))
@@ -109,31 +135,35 @@ def confusion_matrix(y, y_pred):
     # plt.savefig('output_plots/confusion_matrix.png')
     plt.show()
 
-
 def loss_curve(losses):
-    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    ax.plot(losses, label='Loss', linewidth=1, color='black')
-    plt.title('Loss')
-    ax.set_xlabel('Step')
-    ax.set_ylabel('Loss')
-    ax.tick_params(labelsize=15)
-    ax.legend(loc='upper right')
-    # Save plot to src/output_plots
-    # plt.savefig('output_plots/loss_curve.png')
-    plt.show()
-
+    try:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+        ax.plot(losses, label='Loss', linewidth=1, color='black')
+        plt.title('Loss')
+        ax.set_xlabel('Step')
+        ax.set_ylabel('Loss')
+        ax.tick_params(labelsize=15)
+        ax.legend(loc='upper right')
+        # Save plot to src/output_plots
+        # plt.savefig('output_plots/loss_curve.png')
+        plt.show()
+    except Exception as e:
+        print("Error: ", e)
 
 def accuracy_curve(accuracies):
-    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    ax.plot(accuracies, label='Accuracy', linewidth=1, color='black')
-    plt.title('Accuracy')
-    ax.set_xlabel('Step')
-    ax.set_ylabel('Accuracy')
-    ax.tick_params(labelsize=15)
-    ax.legend(loc='lower right')
-    # Save plot to src/output_plots
-    # plt.savefig('output_plots/accuracy_curve.png')
-    plt.show()
+    try:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+        ax.plot(accuracies, label='Accuracy', linewidth=1, color='black')
+        plt.title('Accuracy')
+        ax.set_xlabel('Step')
+        ax.set_ylabel('Accuracy')
+        ax.tick_params(labelsize=15)
+        ax.legend(loc='lower right')
+        # Save plot to src/output_plots
+        # plt.savefig('output_plots/accuracy_curve.png')
+        plt.show()
+    except Exception as e:
+        print("Error: ", e)
 
 
 def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter):
@@ -160,11 +190,11 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
                      np.array(test_score) + np.std(test_score), alpha=0.1, color='green')
     plt.xlabel('Percentage of training set')
     plt.ylabel('Accuracy')
-    plt.grid()
     plt.ylim(0.5, 1.05)
     plt.yticks(np.arange(0.5, 1.05, 0.1))
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
+    plt.grid()
     # Save plot to src/output_plots
     # plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()
