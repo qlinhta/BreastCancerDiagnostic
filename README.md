@@ -37,13 +37,24 @@
   ```
   or run all files `*.ipynb` in directory `Notebooks/` (recommended)
 
+#### Results:
+
+* The results of statistical analysis are in directory `plots/`
+* The results of implemented models are in directory `src/output_plots/`
+* Models are saved in directory `src/output_models/`
+* HTML files for investigating missed predictions of logistic regression `src/logistic_missed_predict_investigate/`
+
 #### Project structure:
 
 * `src/`: source code
-* `src/output_models/`: output models
-* `src/output_plots/`: output plots
-* `src/logistic_missed_predict_investigate/`: HTML files for investigating
-  missed predictions of logistic regression
+  * `data/`: data files
+  * `output_plots/`: output plots
+  * `make_data_beautiful.py`: preprocessing data
+  * `main.py`: implementation of Logistic Regression and LDA
+  * `comparator.py`: comparing implemented models with `sklearn` models
+  * `logistic_missed_predict_investigate/`: investigating missed predictions of logistic regression
+  * ...
+
 * `AREA51/`: test and debug code
 * `dataset/`: data files
 * `Notebooks/`: notebooks
