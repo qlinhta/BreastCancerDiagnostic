@@ -39,8 +39,6 @@
 
 #### Results:
 
-Overview of the results of implemented models (Logistic Regression and LDA) and `sklearn` models:
-
 Table 1: Results of implemented models (Logistic Regression and LDA) and `sklearn` models
 
 | Model               | Accuracy | Precision | Recall | F1-score |
@@ -51,6 +49,7 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 | XGBoost             | 0.97     | 0.97      | 0.95   | 0.96     |
 | AdaBoost            | 0.97     | 0.97      | 0.95   | 0.96     |
 | CatBoost            | 0.98     | 0.97      | 0.97   | 0.97     |
+
 
 * The results of statistical analysis are in directory `plots/`
 * The results of implemented models are in directory `src/output_plots/`
