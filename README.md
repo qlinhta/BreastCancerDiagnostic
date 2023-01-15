@@ -25,7 +25,7 @@
   ```
 * Run file `make_data_beautiful.py` to start preprocessing data process
   ```
-  python3 make_data_beautiful.py
+  python3 src/make_data_beautiful.py
   ```
 * Run files `main.py` to get the results of implemented models (Logistic Regression and LDA)
   ```
