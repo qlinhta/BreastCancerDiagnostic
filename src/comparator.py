@@ -115,6 +115,27 @@ print(f'XGBoost Accuracy: {accuracy_score(y_test, xgb_y_pred)}')
 print(f'AdaBoost Accuracy: {accuracy_score(y_test, ada_y_pred)}')
 print(f'CatBoost Accuracy: {accuracy_score(y_test, cat_y_pred)}')
 
+# Print accuracy, precision, recall, f1-score
+print(f'LinearSVM Accuracy: {accuracy_score(y_test, svm_y_pred)}')
+print(f'LinearSVM Precision: {precision_score(y_test, svm_y_pred)}')
+print(f'LinearSVM Recall: {recall_score(y_test, svm_y_pred)}')
+print(f'LinearSVM F1-score: {f1_score(y_test, svm_y_pred)}')
+
+print(f'XGBoost Accuracy: {accuracy_score(y_test, xgb_y_pred)}')
+print(f'XGBoost Precision: {precision_score(y_test, xgb_y_pred)}')
+print(f'XGBoost Recall: {recall_score(y_test, xgb_y_pred)}')
+print(f'XGBoost F1-score: {f1_score(y_test, xgb_y_pred)}')
+
+print(f'AdaBoost Accuracy: {accuracy_score(y_test, ada_y_pred)}')
+print(f'AdaBoost Precision: {precision_score(y_test, ada_y_pred)}')
+print(f'AdaBoost Recall: {recall_score(y_test, ada_y_pred)}')
+print(f'AdaBoost F1-score: {f1_score(y_test, ada_y_pred)}')
+
+print(f'CatBoost Accuracy: {accuracy_score(y_test, cat_y_pred)}')
+print(f'CatBoost Precision: {precision_score(y_test, cat_y_pred)}')
+print(f'CatBoost Recall: {recall_score(y_test, cat_y_pred)}')
+print(f'CatBoost F1-score: {f1_score(y_test, cat_y_pred)}')
+
 # For each algorithm, plot predicted labels and true labels
 fig, ax = plt.subplots(2, 2, figsize=(15, 15))
 ax[0, 0].set_title('LinearSVM')
