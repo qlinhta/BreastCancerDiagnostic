@@ -36,6 +36,53 @@
 * `README.md`: this file
 * `requirements.txt`: list of necessary packages
 
+#### Overview dataset and problem:
+
+* Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
+* Problem: Predict whether the cancer is benign or malignant
+* Data description:
+  * 569 samples
+  * 30 features
+  * 2 classes: benign (357 samples) and malignant (212 samples)
+  * 1 target: `diagnosis` (B: benign, M: malignant)
+* Features description:
+  * `id`: ID number
+  * `diagnosis`: diagnosis of breast tissues (B: benign, M: malignant)
+  * `radius_mean`: mean of distances from center to points on the perimeter
+  * `texture_mean`: standard deviation of gray-scale values
+  * `perimeter_mean`: mean size of the core tumor
+  * `area_mean`: mean smoothness of the tumor
+  * `smoothness_mean`: mean number of concave portions of the contour
+  * `compactness_mean`: mean fractal dimension of the tumor
+  * `concavity_mean`: mean radius of gyration of the tumor
+  * `concave points_mean`: mean perimeter of the tumor
+  * `symmetry_mean`: mean area of the tumor
+  * `fractal_dimension_mean`: mean smoothness of the tumor
+  * `radius_se`: standard error for the mean of distances from center to points on the perimeter
+  * `texture_se`: standard error for standard deviation of gray-scale values
+  * `perimeter_se`: standard error for the mean size of the core tumor
+  * `area_se`: standard error for the mean smoothness of the tumor
+  * `smoothness_se`: standard error for the mean number of concave portions of the contour
+  * `compactness_se`: standard error for the mean fractal dimension of the tumor
+  * `concavity_se`: standard error for the mean radius of gyration of the tumor
+  * `concave points_se`: standard error for the mean perimeter of the tumor
+  * `symmetry_se`: standard error for the mean area of the tumor
+  * `fractal_dimension_se`: standard error for the mean smoothness of the tumor
+  * `radius_worst`: "worst" or largest mean value for mean of distances from center to points on the perimeter
+  * `texture_worst`: "worst" or largest mean value for standard deviation of gray-scale values
+  * `perimeter_worst`: "worst" or largest mean value for the mean size of the core tumor
+  * `area_worst`: "worst" or largest mean value for the mean smoothness of the tumor
+  * `smoothness_worst`: "worst" or largest mean value for the mean number of concave portions of the contour
+  * `compactness_worst`: "worst" or largest mean value for the mean fractal dimension of the tumor
+  * `concavity_worst`: "worst" or largest mean value for the mean radius of gyration of the tumor
+  * `concave points_worst`: "worst" or largest mean value for the mean perimeter of the tumor
+  * `symmetry_worst`: "worst" or largest mean value for the mean area of the tumor
+  * `fractal_dimension_worst`: "worst" or largest mean value for the mean smoothness of the tumor
+* Target description:
+  * `diagnosis`: diagnosis of breast tissues (B: benign, M: malignant)
+* Note: `mean`, `se`, `worst` are computed for each image, resulting in 3 features
+  for each of the original 30 features
+
 #### TODO:
 
 * [x] Implement `LDA`
