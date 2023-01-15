@@ -77,9 +77,7 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 
 #### Overview dataset and problem:
 
-*
-
-Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
+* Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
 
 * Problem: Predict whether the cancer is benign or malignant
 * Data description:
