@@ -17,16 +17,25 @@
 
 #### Execution:
 
-* Requirements: `Python 3.6`, `pip`, `virtualenv` or `conda`
-* Setup necessary packages:
+* Requirements: `Python` version 3.6 or higher.
+* Run file `Analysis.R` to get the results of statistical analysis
+* Install all required packages by running:
   ```
   pip install -r requirements.txt
   ```
-* Main file to run:
+* Run file `make_data_beautiful.py` to start preprocessing data process
+  ```
+  python3 make_data_beautiful.py
+  ```
+* Run files `main.py` to get the results of implemented models (Logistic Regression and LDA)
   ```
   python3 src/main.py
   ```
-or run `*.ipynb` in directory `Notebooks/`
+* Run files `comparator.py` to get the results comparing implemented models with `sklearn` models
+  ```
+    python3 src/comparator.py
+  ```
+or run all files `*.ipynb` in directory `Notebooks/` (recommended)
 
 #### Project structure:
 
