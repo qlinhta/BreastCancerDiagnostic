@@ -23,15 +23,15 @@
   ```
   pip install -r requirements.txt
   ```
-  Run file `make_data_beautiful.py` to start preprocessing data process
+* Run file `make_data_beautiful.py` to start preprocessing data process
   ```
   python3 src/make_data_beautiful.py
   ```
-  Run files `main.py` to get the results of implemented models (Logistic Regression and LDA)
+* Run files `main.py` to get the results of implemented models (Logistic Regression and LDA)
   ```
   python3 src/main.py
   ```
-  Run files `comparator.py` to get the results comparing implemented models with `sklearn` models
+* Run files `comparator.py` to get the results comparing implemented models with `sklearn` models
   ```
     python3 src/comparator.py
   ```
