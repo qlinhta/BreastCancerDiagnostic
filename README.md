@@ -21,6 +21,21 @@
 * Setup necessary packages: `pip install -r requirements.txt`
 * Main file to run: `python src/main.py` or notebook `Notebooks/*.ipynb`
 
+#### Project structure:
+
+* `src/`: source code
+* `src/output_models/`: output models
+* `src/output_plots/`: output plots
+* `src/logistic_missed_predict_investigate/`: HTML files for investigating
+  missed predictions of logistic regression
+* `AREA51/`: test and debug code
+* `dataset/`: data files
+* `Notebooks/`: notebooks
+* `plots/`: analysis plots
+* `Analysis.R/`: R scripts for analysis
+* `README.md`: this file
+* `requirements.txt`: list of necessary packages
+
 #### TODO:
 
 * [x] Implement `LDA`
