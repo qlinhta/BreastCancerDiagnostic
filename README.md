@@ -18,8 +18,15 @@
 #### Execution:
 
 * Requirements: `Python 3.6`, `pip`, `virtualenv` or `conda`
-* Setup necessary packages: `pip install -r requirements.txt`
-* Main file to run: `python src/main.py` or notebook `Notebooks/*.ipynb`
+* Setup necessary packages:
+  ```
+  pip install -r requirements.txt
+  ```
+* Main file to run:
+  ```
+  python3 src/main.py
+  ```
+or run `*.ipynb` in directory `Notebooks/`
 
 #### Project structure:
 
@@ -101,3 +108,20 @@
 * [x] Implement the ensemble model and compare the results
 * [x] Interpret the results
 * [ ] Write the report
+
+#### References:
+
+* Author of the dataset: [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)):
+  * Dr. William H. Wolberg, General Surgery Dept., University of
+    Wisconsin, Clinical Sciences Center, Madison, WI 53792
+  * W. Nick Street, Computer Sciences Dept., University of
+    Wisconsin, 1210 West Dayton St., Madison, WI 53706
+  * Olvi L. Mangasarian, Computer Sciences Dept., University of
+    Wisconsin, 1210 West Dayton St., Madison, WI 53706
+* [Logistic Regression lecture notes](https://www.cs.cmu.edu/~tom/mlbook/NBayesLogReg.pdf) by Tom Mitchell, Carnegie Mellon University
+* [Matrix Cookbook](https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf) by
+  [H. Wolkowicz](https://www.math.uwaterloo.ca/~hwolkowi/)
+* [Logistic Regression](https://www.coursera.org/learn/machine-learning/resources/2QZ9T) by Andrew Ng, Stanford University
+* [LDA detailed explanation](https://usir.salford.ac.uk/id/eprint/52074/1/AI_Com_LDA_Tarek.pdf) by Tarek Elgindy, University of Salford
+* [Book Machine Learning in Action](https://www.manning.com/books/machine-learning-in-action) by Peter Harrington
+* [Machine Learning A Probabilistic Perspective](http://noiselab.ucsd.edu/ECE228/Murphy_Machine_Learning.pdf) by Kevin P. Murphy
