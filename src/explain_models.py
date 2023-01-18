@@ -40,14 +40,14 @@ X = data.drop('diagnosis', axis=1)
 y = data['diagnosis']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-shape_explainer = shap.KernelExplainer(model.predict_proba, X_train)
-shap_values = shape_explainer.shap_values(X_test, nsamples=100)
+shape_lr_explainer = shap.KernelExplainer(model.predict_proba, X_train)
+shap_values = shape_lr_explainer.shap_values(X_test, nsamples=100)
 shap.summary_plot(shap_values, X_test, plot_type='bar', show=False)
 plt.savefig('../src/output_plots/LR_shap_summary_plot.png')
 plt.show()
 
 # Plot the shap decision plot
-shap.decision_plot(shape_explainer.expected_value[1], shap_values[1], X_test, show=False)
+shap.decision_plot(shape_lr_explainer.expected_value[1], shap_values[1], X_test, show=False)
 plt.title('Decision process plot')
 plt.savefig('../src/output_plots/LR_shap_decision_plot.png')
 plt.show()
@@ -62,10 +62,12 @@ plt.savefig('../src/output_plots/LR_shap_dependence_plot.png')
 plt.show()
 
 # Create explainer object dalex
-dx_explainer = dx.Explainer(model, X_train, y_train, label='Logistic Regression')
-print(dx_explainer.model_performance())
-print(dx_explainer.model_parts())
-dx_explainer.model_parts().plot()
+dx_lr_explainer = dx.Explainer(model, X_train, y_train, label='Logistic Regression')
+print(dx_lr_explainer.model_performance())
+print(dx_lr_explainer.model_parts())
+dx_lr_explainer.model_parts().plot()
 
-sample = X_test.iloc[100]
-dx_explainer.predict_parts(sample).plot()
+sample1 = X_test.iloc[14]
+sample2 = X_test.iloc[15]
+dx_lr_explainer.predict_parts(sample1).plot()
+dx_lr_explainer.predict_parts(sample2).plot()
