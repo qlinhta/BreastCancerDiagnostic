@@ -75,7 +75,7 @@ class LogisticRegression:
         y_pred = self._sigmoid(z)
         return np.round(np.array([1 - y_pred, y_pred]).T, 2)
 
-    def cross_validation(self, X, y, n_splits=5):
+    def cross_validation(self, X, y, n_splits=10):
         # Split the dataset into n_splits
         X_split = np.array_split(X, n_splits)
         y_split = np.array_split(y, n_splits)

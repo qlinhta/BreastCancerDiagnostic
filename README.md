@@ -27,7 +27,7 @@
   ```
   python3 src/make_data_beautiful.py
   ```
-* Run files `main.py` to get the results of implemented models (Logistic Regression and LDA)
+* Run files `main.py` or `Notebooks/LogisticRegression.ipynb` to get the results of implemented models (Logistic Regression and LDA)
   ```
   python3 src/main.py
   ```
@@ -35,7 +35,10 @@
   ```
     python3 src/comparator.py
   ```
-  or run all files `*.ipynb` in directory `Notebooks/` (recommended)
+* Run files `explain_model.py` or `Notebooks/explain_model.ipynb` to get the results of explaining implemented models
+  ```
+    python3 src/explain_model.py
+  ```
 
 #### Results:
 

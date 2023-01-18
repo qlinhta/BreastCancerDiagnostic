@@ -1,4 +1,4 @@
-import eli5
+import dalex as dx
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -153,15 +153,3 @@ plt.show()
 
 # Save the model to output_models
 joblib.dump(model, 'output_models/LR_model.pkl')
-
-shape_explainer = shap.KernelExplainer(model.predict_proba, X_train)
-shap_values = shape_explainer.shap_values(X_test, nsamples=100)
-shap.summary_plot(shap_values, X_test, plot_type='bar', show=False)
-plt.savefig('output_plots/LR_shap_summary_plot.png')
-plt.show()
-
-# Plot the shap decision plot
-shap.decision_plot(shape_explainer.expected_value[1], shap_values[1], X_test, show=False)
-plt.title('Decision process plot')
-plt.savefig('output_plots/LR_shap_decision_plot.png')
-plt.show()
