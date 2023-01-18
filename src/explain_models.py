@@ -73,3 +73,11 @@ sample1 = X_test.iloc[14]
 sample2 = X_test.iloc[15]
 dx_lr_explainer.predict_parts(sample1).plot()
 dx_lr_explainer.predict_parts(sample2).plot()
+
+# Get misclassified samples from test set and plot them as prediction parts
+misclassified = X_test[y_test != model.predict(X_test)]
+misclassified = misclassified.reset_index(drop=True)
+
+for i in range(5):
+    dx_lr_explainer.predict_parts(misclassified.iloc[i]).plot()
+    plt.show()
