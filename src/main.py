@@ -62,15 +62,21 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 metrics.classification_summary(y_test, y_pred)
 metrics.confusion_matrix(y_test, y_pred)
+plt.savefig('output_plots/confusion_matrix.png')
 metrics.roc_curve(y_test, y_pred)
+plt.savefig('output_plots/roc_curve.png')
 metrics.precision_recall_curve(y_test, y_pred)
+plt.savefig('output_plots/precision_recall_curve.png')
 metrics.loss_curve(model.losses)
+plt.savefig('output_plots/loss_curve.png')
 metrics.accuracy_curve(model.accuracies)
+plt.savefig('output_plots/accuracy_curve.png')
 print("Accuracy: ", metrics.accuracy(y_test, y_pred))
 print("Precision: ", metrics.precision(y_test, y_pred))
 print("Recall: ", metrics.recall(y_test, y_pred))
 print("F1: ", metrics.f1_score(y_test, y_pred))
 metrics.learning_curve_lr(X_train, y_train, X_test, y_test, best_learning_rate, best_max_iter)
+plt.savefig('output_plots/learning_curve_lr.png')
 
 plt.subplots(figsize=(8, 8))
 plt.title('Predicted Labels')
@@ -83,7 +89,6 @@ plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
-# Save the plot to src/output_plots
 plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
@@ -109,7 +114,6 @@ for i in range(len(y_test)):
     if y_test.iloc[i] != y_pred[i]:
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
-# Save the plot to src/output_plots
 plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 

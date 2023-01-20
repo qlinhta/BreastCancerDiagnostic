@@ -84,4 +84,3 @@ for i in range(5):
 
 mp = dx_lr_explainer.model_performance(model_type='classification')
 mp.plot()
-mp.plot(geom="roc")
