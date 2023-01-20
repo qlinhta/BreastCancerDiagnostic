@@ -81,3 +81,7 @@ misclassified = misclassified.reset_index(drop=True)
 for i in range(5):
     dx_lr_explainer.predict_parts(misclassified.iloc[i]).plot()
     plt.show()
+
+mp = dx_lr_explainer.model_performance(model_type='classification')
+mp.plot()
+mp.plot(geom="roc")
