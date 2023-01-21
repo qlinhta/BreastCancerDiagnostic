@@ -37,7 +37,7 @@ y = df['diagnosis']
 threshold, scores, index_of_outliers = local_outlier_factor(df, 30, 0.5, -1.5)
 
 # Plot
-plt.subplots(figsize=(10, 10))
+plt.subplots(figsize=(8, 8))
 plt.title('Local Outlier Factor (LOF)')
 plt.scatter(X.iloc[:, 0], X.iloc[:, 1], edgecolors='blue', facecolors='white', s=40., label='Data points')
 plt.scatter(X.iloc[index_of_outliers, 0], X.iloc[index_of_outliers, 1], edgecolors='red', facecolors='red', s=50,
