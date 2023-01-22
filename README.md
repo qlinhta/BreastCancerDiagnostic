@@ -21,6 +21,10 @@
 * Run file `Analysis.R` to get the results of statistical analysis
 * Install all required packages by running:
   ```
+  python3 setup.py install
+  ```
+  or you can just run the following command if you have `pip` installed:
+  ```
   pip install -r requirements.txt
   ```
 * Run file `make_data_beautiful.py` to start preprocessing data process
@@ -35,8 +39,9 @@
   ```
     python3 src/comparator.py
   ```
-* Run files `explain_model.py` or `Notebooks/explain_model.ipynb` to get the results of explaining implemented models
+* Run files `explain_model.py` or `Notebooks/explain_model.ipynb` to get the results of explaining implemented models.
   ```
+    # But notebook is recommended in order to see the results properly and interactively. 
     python3 src/explain_model.py
   ```
 
