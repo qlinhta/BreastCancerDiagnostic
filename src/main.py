@@ -23,11 +23,11 @@ plt.rc('legend', fontsize=18)
 plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
-from src import LogisticRegression, metrics
+import LogisticRegression, metrics
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv('../dataset/breast-cancer-wisconsin-processed.csv')
-label = pd.read_csv('../dataset/breast-cancer-wisconsin-processed-label.csv')
+df = pd.read_csv('/home/haanh88/ML-PSL/dataset/breast-cancer-wisconsin-processed.csv')
+label = pd.read_csv('/home/haanh88/ML-PSL/dataset/breast-cancer-wisconsin-processed-label.csv')
 data = pd.concat([df, label], axis=1)
 
 # Split the data with stratified sampling
@@ -44,8 +44,6 @@ plt.scatter(X_train[y_train == 1]['smoothness_mean_log'], X_train[y_train == 1][
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
-# Save the plot to src/output_plots
-plt.savefig('output_plots/dataset.png')
 plt.show()
 
 # Tuning the hyperparameters
@@ -62,21 +60,15 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 metrics.classification_summary(y_test, y_pred)
 metrics.confusion_matrix(y_test, y_pred)
-plt.savefig('output_plots/confusion_matrix.png')
 metrics.roc_curve(y_test, y_pred)
-plt.savefig('output_plots/roc_curve.png')
 metrics.precision_recall_curve(y_test, y_pred)
-plt.savefig('output_plots/precision_recall_curve.png')
 metrics.loss_curve(model.losses)
-plt.savefig('output_plots/loss_curve.png')
 metrics.accuracy_curve(model.accuracies)
-plt.savefig('output_plots/accuracy_curve.png')
 print("Accuracy: ", metrics.accuracy(y_test, y_pred))
 print("Precision: ", metrics.precision(y_test, y_pred))
 print("Recall: ", metrics.recall(y_test, y_pred))
 print("F1: ", metrics.f1_score(y_test, y_pred))
 metrics.learning_curve_lr(X_train, y_train, X_test, y_test, best_learning_rate, best_max_iter)
-plt.savefig('output_plots/learning_curve_lr.png')
 
 plt.subplots(figsize=(8, 8))
 plt.title('Predicted Labels')
@@ -89,7 +81,6 @@ plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
-plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
@@ -114,7 +105,6 @@ for i in range(len(y_test)):
     if y_test.iloc[i] != y_pred[i]:
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
-plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
 # Print best hyperparameters
@@ -152,8 +142,7 @@ ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_pro
 ax[1].set_xlabel('Log Scale of Smoothness Mean')
 ax[1].set_ylabel('Probability of being Malignant')
 ax[1].legend()
-plt.savefig('output_plots/LR_probability.png')
 plt.show()
 
 # Save the model to output_models
-joblib.dump(model, 'output_models/LR_model.pkl')
+# joblib.dump(model, 'output_models/LR_model.pkl')

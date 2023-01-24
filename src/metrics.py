@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
+import LDA
 
 # Set style for plots as latex style
 plt.style.use('seaborn-paper')
@@ -18,7 +19,7 @@ plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
 
-from src import LogisticRegression
+import LogisticRegression
 
 
 def accuracy(y, y_pred):
@@ -182,6 +183,43 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.plot(cross_val_score, label='Cross validation score', linewidth=1, color='green', marker='o', linestyle='--', markersize=10)
     plt.fill_between(range(len(cross_val_score)), np.array(cross_val_score) - np.std(cross_val_score),
                      np.array(cross_val_score) + np.std(cross_val_score), alpha=0.1, color='green')
+    plt.xlabel('Percentage of training set')
+    plt.ylabel('Accuracy')
+    plt.ylim(0.5, 1.05)
+    plt.yticks(np.arange(0.5, 1.05, 0.1))
+    plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+def learning_curve_lda(X_train, y_train, X_test, y_test,n_components):
+    train_score = []
+    cross_val_score = []
+    size_set = 10
+    for i in range(1, size_set + 1):
+        # Get the training data
+        X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
+        y_train_ = y_train[:int(i * y_train.shape[0] / size_set)]
+        # Train the model
+        model = LDA.LDA(n_components)
+        model.fit(X_train_, y_train_)
+        model.set_coef_intercept(X_train, y_train)
+        # Get the training score
+        train_score.append(accuracy(y_train_, model.predict(X_train_)))
+        # Get the cross validation score
+        cross_val_score.append(accuracy(y_test, model.predict(X_test)))
+       
+    # Plot the learning curve
+    print(train_score)
+    print(cross_val_score)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    plt.title('Learning curve of LDA model')
+    plt.plot(train_score, label='Training score', linewidth=1, color='blue', marker='v', markersize=10)
+    plt.fill_between(range(len(train_score)), np.array(train_score) - np.std(train_score),
+                    np.array(train_score) + np.std(train_score), alpha=0.1, color='blue')
+    plt.plot(cross_val_score, label='Cross validation score', linewidth=1, color='green', marker='o', linestyle='--', markersize=10)
+    plt.fill_between(range(len(cross_val_score)), np.array(cross_val_score) - np.std(cross_val_score),
+                    np.array(cross_val_score) + np.std(cross_val_score), alpha=0.1, color='green')
     plt.xlabel('Percentage of training set')
     plt.ylabel('Accuracy')
     plt.ylim(0.5, 1.05)
