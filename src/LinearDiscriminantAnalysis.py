@@ -10,7 +10,6 @@ import lime.lime_image
 import warnings
 
 import shap
-from matplotlib.colors import ListedColormap
 
 plt.style.use('seaborn-paper')
 plt.rc('text', usetex=True)
@@ -71,6 +70,31 @@ class LinearDiscriminantAnalysis(object):
     def score(self, X_test, y_test):
         return np.sum(self.predict(X_test) == y_test) / len(y_test)
 
+    def predict_proba(self, X_test):
+        return np.dot(X_test, self.w) + self.b
+
+    def predict_log_proba(self, X_test):
+        return np.log(self.predict_proba(X_test))
+
+    def cross_validation(self, X_train, y_train, k=10):
+        cross_validation = []
+        avg = 0
+        # Split the data into k folds
+        X_train = np.array_split(X_train, k)
+        y_train = np.array_split(y_train, k)
+        # Cross validation
+        for i in range(k):
+            X_train_ = np.concatenate(X_train[:i] + X_train[i + 1:])
+            y_train_ = np.concatenate(y_train[:i] + y_train[i + 1:])
+            X_test_ = X_train[i]
+            y_test_ = y_train[i]
+            self.fit(X_train_, y_train_)
+            print('Fold {}: {}'.format(i, self.score(X_test_, y_test_)))
+            cross_validation.append(self.score(X_test_, y_test_))
+            avg += self.score(X_test_, y_test_)
+        print('Average: {}'.format(avg / k))
+        return cross_validation
+
 
 if __name__ == '__main__':
     df = pd.read_csv('../dataset/breast-cancer-wisconsin-processed.csv')
@@ -98,3 +122,29 @@ if __name__ == '__main__':
     print("Recall: ", metrics.recall(y_test, y_pred))
     print("F1: ", metrics.f1_score(y_test, y_pred))
 
+    plt.subplots(figsize=(8, 8))
+    plt.title('Predicted Labels')
+    plt.scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['texture_mean_log'], marker='o',
+                label='Benign', s=100, edgecolors='red', facecolors='white')
+    plt.scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
+                label='Malignant', s=100, edgecolors='darkorange', facecolors='darkorange')
+    plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_test]['texture_mean_log'],
+                marker='x',
+                label='Misclassified', s=100, edgecolors='black', facecolors='black')
+    plt.xlabel('Log Scale of Smoothness Mean')
+    plt.ylabel('Log Scale of Texture Mean')
+    plt.legend()
+    plt.show()
+
+    misclassified = X_test[y_pred != y_test]
+
+    explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns,
+                                                       class_names=['Benign', 'Malignant'],
+                                                       discretize_continuous=True, verbose=True, mode='classification')
+    for i in misclassified.index:
+        exp = explainer.explain_instance(X_test.loc[i].values, lda.predict_proba, num_features=10)
+        exp.show_in_notebook(show_table=True, show_all=True)
+        exp.save_to_file('lda_missed_predict_investigate/' + str(i) + '.html')
+
+    # Cross validation
+    lda.cross_validation(X_train, y_train)
