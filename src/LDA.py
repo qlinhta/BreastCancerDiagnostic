@@ -1,6 +1,7 @@
 import numpy as np
 import metrics
-
+from scipy.stats import multivariate_normal
+from numpy.linalg import det, inv
 
 class LDA:
 
@@ -10,6 +11,7 @@ class LDA:
         self.linear_discriminants = None  # store the eigenvector that we compute
         self.coef = np.zeros((self.n_classes,))
         self.intercept = 0.0
+        self.priors = []
 
 
     def means(self,X, y):
@@ -24,22 +26,25 @@ class LDA:
         classes = np.unique(y)
         pi_k = np.zeros((len(classes),))
         for c in classes:
-            elm = y[y == c]
-            pi_k[c] = len(elm) / X.shape[0]
+            pi_k[c] = len(y[y==c]) / len(y)
         return pi_k
 
+    def set_priors(self,X,y):
+       for i in range(2):
+        self.priors.append(len(y[y==i])/len(y))
 
-    def general_cov(self, X, y):
+    def general_cov(self, X, y,):
+     
         classes = np.unique(y)
         sigma = np.zeros((X.shape[1], X.shape[1]))
         for c in classes:
             sigma = sigma + len(X[y == c]) * np.cov(X[y == c].T)
-        return sigma / X.shape[0]
+        sigma = sigma / X.shape[0]
+        return sigma
 
     def fit(self, X, y):
         n_features = X.shape[1]
         class_labels = np.unique(y)
-
         mean = np.mean(X, axis=0)
         S_W = np.zeros((n_features, n_features))
         S_B = np.zeros((n_features, n_features))
@@ -69,11 +74,44 @@ class LDA:
         scores = self.decision_boundary(X)
         y_predicted = [1 if i > 0 else 0 for i in scores]
         return np.array(y_predicted)
+    
+
+
+
+    def normal_multivariate(self,X,mean,cov):
+        n = mean.shape[0]
+        cov_inv = inv(cov)
+        cov_det = det(cov)
+        f = -0.5 * ((X - mean) @ cov_inv) * (X - mean)
+        nominator = np.exp(f.sum(axis=1))
+        denominator = (2 * np.pi) ** (n / 2) * cov_det ** 0.5
+        probas = nominator / denominator
+        return probas
+         
+    def predict_proba(self,X):
+        y_pred = self.predict(X)
+        proba = np.zeros((X.shape[0], 2))
+        proba[:, 1] = (y_pred == 1).astype(int)
+        proba[:, 0] = (y_pred == 0).astype(int)
+        return proba
+
+    def predict_proba2(self,X,mean,cov0,cov1,priors):
+        probas = np.zeros((X.shape[0],self.n_classes))
+        for k in range(self.n_classes):
+            mean_k = mean[k]
+            if(k==0):
+                cov_k = cov0
+            else:
+                cov_k = cov1
+            p_k = priors[k]
+            probas[:,k] = p_k*multivariate_normal.pdf(X,mean_k, cov_k)
+        y_predicted = [1 if probas[i][1] > probas[i][0] else 0 for i,row in enumerate(probas)]
+        return np.array(y_predicted)
 
     def set_coef_intercept(self, X, y):
         classes = np.unique(y)
         means_overall = self.means(X, y)
-        pi_overall = self.prob_k(X, y)
+        pi_overall = self.prob_k(X,y)
         sigma_inv = np.linalg.inv(self.general_cov(X, y))
 
         # coef
@@ -82,6 +120,11 @@ class LDA:
         # intercept
         p = (means_overall[1] - means_overall[0]) @ sigma_inv @ (means_overall[0] + means_overall[1])
         self.intercept = (-1 / 2 * p - np.log(pi_overall[0] / pi_overall[1]))
+        """
+        coef = np.array(self.coef[1, :] - self.coef[0, :])
+        self.coef = np.reshape(coef, (1, -1))
+        intercept = np.array(self.intercept[1] - self.intercept[0])
+        self.intercept = np.reshape(intercept, 1)"""
 
     def decision_boundary(self, X):  # x.Tw + b = 0
         return X @ self.coef.T + self.intercept
