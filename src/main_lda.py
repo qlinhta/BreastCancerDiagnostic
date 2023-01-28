@@ -47,23 +47,24 @@ plt.scatter(X_train[y_train == 1]['smoothness_mean_log'], X_train[y_train == 1][
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
-#plt.show()
+plt.show()
 
-model = LDA(16)
+#Fit a LinearDiscriminantAnalysis model
+model = LDA()
 model.fit(X_train, y_train)
-model.set_coef_intercept(X_train, y_train)
+
+
 y_pred = (model.predict(X_test))
-
-print("here")
-for i in range (2,2,25):
-    print(i)
-    print("CVs",model.cross_validation_lda(X, y, 10,i))
-
-print("there")
+print("Accuracy: ", metrics.accuracy(y_test, y_pred))
+print("Precision: ", metrics.precision(y_test, y_pred))
+print("Recall: ", metrics.recall(y_test, y_pred))
+print("F1: ", metrics.f1_score(y_test, y_pred))
+metrics.learning_curve_lda(X_train, y_train, X_test, y_test)
+metrics.confusion_matrix(y_test, y_pred)
+metrics.precision_recall_curve(y_test, y_pred)
 #Predict with normal multivariate probability
 """
-
-model.set_priors(X_train, y_train)
+model2.fit(X_train, y_train)
 mean = model.means(X_train, y_train)
 mask0 = y_train == 0
 X_y0 = X_train[mask0]
@@ -75,29 +76,13 @@ cov1 = model.general_cov(X_y1, y_train[mask1])
 
 y_pred2 = model.predict_proba2(X_test, mean,cov0,cov1, model.priors)
 
-print("accuracy: " , metrics.accuracy(y_test, y_pred2))
-print("recall: " ,metrics.recall(y_test, y_pred2))
-
-print("accuracy: " , metrics.accuracy(y_test, y_pred))
-print("recall: " ,metrics.recall(y_test, y_pred))"""
-
-
-#metrics.confusion_matrix(y_test, y_pred)
-
-#print("CV: ", model.cross_validation_lda(X_train, y_train, 10))
-#print("classification summary:" ,metrics.classification_summary(y_test, y_pred))
-metrics.learning_curve_lda(X_train, y_train, X_test, y_test, 4)
-for i in range (2,2,25):
-    print(i)
-    print("CVs",model.cross_validation_lda(X, y, 10,i))
-#metrics.roc_curve(y_test, y_pred)
-#metrics.loss_curve(model.losses)
+print("Accuracy of the 2nd approche: ", metrics.accuracy(y_test, y_pred2))
+print("Precision of the 2nd approche: ", metrics.precision(y_test, y_pred2))
+print("Recall of the 2nd approche: ", metrics.recall(y_test, y_pred2))
+print("F1 of the 2nd approche: ", metrics.f1_score(y_test, y_pred2))
+metrics.learning_curve_lda(X_train, y_train, X_test, y_test)
 
 """
-metrics.precision_recall_curve(y_test, y_pred)
-
-metrics.accuracy_curve(model.accuracies)
-
 
 misclassified = X_test[y_pred != y_test]
 
@@ -105,30 +90,73 @@ explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names
                                                    class_names=['Benign', 'Malignant'],
                                                    discretize_continuous=True, verbose=True, mode='classification')
 for i in misclassified.index:
-    exp = explainer.explain_instance(X_test.loc[i].values, model.predict_proba, num_features=10)
+    exp = explainer.explain_instance(X_test.loc[i].values, model.predict_proba_to_plot, num_features=10)
     exp.show_in_notebook(show_table=True, show_all=True)
 
-
+#Log scale of smoothness mean1
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
 ax[0].set_title('Probability of being Benign')
-ax[0].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 0])[:, 0], marker='o',
+ax[0].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred == 0])[:, 0], marker='o',
               label='Benign', s=100, edgecolors='blue', facecolors='white')
-ax[0].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 1])[:, 0], marker='v',
+ax[0].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred == 1])[:, 0], marker='v',
               label='Malignant', s=100, edgecolors='red', facecolors='red')
-ax[0].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba(X_test[y_pred != y_test])[:, 0],
+ax[0].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred != y_test])[:, 0],
               marker='x', label='Misclassified', s=100, edgecolors='black', facecolors='black')
 ax[0].set_xlabel('Log Scale of Smoothness Mean')
 ax[0].set_ylabel('Probability of being Benign')
 ax[0].legend()
 ax[1].set_title('Probability of being Malignant')
-ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 0])[:, 1], marker='o',
+
+ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred == 0])[:, 1], marker='o',
               label='Benign', s=100, edgecolors='blue', facecolors='white')
-ax[1].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba(X_test[y_pred == 1])[:, 1], marker='v',
+ax[1].scatter(X_test[y_pred == 1]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred == 1])[:, 1], marker='v',
               label='Malignant', s=100, edgecolors='red', facecolors='red')
-ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba(X_test[y_pred != y_test])[:, 1],
+ax[1].scatter(X_test[y_pred != y_test]['smoothness_mean_log'], model.predict_proba_to_plot(X_test[y_pred != y_test])[:, 1],
               marker='x', label='Misclassified', s=100, edgecolors='black', facecolors='black')
 ax[1].set_xlabel('Log Scale of Smoothness Mean')
 ax[1].set_ylabel('Probability of being Malignant')
 ax[1].legend()
 plt.show()
-"""
+
+#Misclassified
+plt.subplots(figsize=(8, 8))
+plt.title('Predicted Labels')
+plt.scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['texture_mean_log'], marker='o',
+            label='Benign', s=100, edgecolors='blue', facecolors='white')
+plt.scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
+            label='Malignant', s=100, edgecolors='red', facecolors='red')
+plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_test]['texture_mean_log'], marker='x',
+            label='Misclassified', s=100, edgecolors='black', facecolors='black')
+plt.xlabel('Log Scale of Smoothness Mean')
+plt.ylabel('Log Scale of Texture Mean')
+plt.legend()
+#plt.savefig('../src/output_plots/LR_predicted_labels.png')
+plt.show()
+
+plt.show()
+
+#LDA true vs predicted labels
+fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+ax[0].set_title('True Labels')
+ax[0].scatter(X_test[y_test == 0]['smoothness_mean_log'], X_test[y_test == 0]['texture_mean_log'], marker='o',
+              label='Benign', s=100, edgecolors='blue', facecolors='white')
+ax[0].scatter(X_test[y_test == 1]['smoothness_mean_log'], X_test[y_test == 1]['texture_mean_log'], marker='v',
+              label='Malignant', s=100, edgecolors='green', facecolors='green')
+ax[0].set_xlabel('Log Scale of Smoothness Mean')
+ax[0].set_ylabel('Log Scale of Texture Mean')
+ax[0].legend()
+
+ax[1].set_title('Predicted Labels')
+ax[1].scatter(X_test[y_pred == 0]['smoothness_mean_log'], X_test[y_pred == 0]['texture_mean_log'], marker='o',
+              label='Benign', s=100, edgecolors='red', facecolors='white')
+ax[1].scatter(X_test[y_pred == 1]['smoothness_mean_log'], X_test[y_pred == 1]['texture_mean_log'], marker='v',
+              label='Malignant', s=100, edgecolors='darkorange', facecolors='darkorange')
+ax[1].set_xlabel('Log Scale of Smoothness Mean')
+ax[1].set_ylabel('Log Scale of Texture Mean')
+ax[1].legend()
+for i in range(len(y_test)):
+    if y_test.iloc[i] != y_pred[i]:
+        ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
+                      label='Incorrect', s=100, edgecolors='black', facecolors='black')
+#plt.savefig('../src/output_plots/LR_true_vs_predicted_labels.png')
+plt.show()

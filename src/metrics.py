@@ -192,7 +192,7 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.grid()
     plt.show()
 
-def learning_curve_lda(X_train, y_train, X_test, y_test,n_components):
+def learning_curve_lda(X_train, y_train, X_test, y_test):
     train_score = []
     cross_val_score = []
     size_set = 10
@@ -200,18 +200,13 @@ def learning_curve_lda(X_train, y_train, X_test, y_test,n_components):
         # Get the training data
         X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
         y_train_ = y_train[:int(i * y_train.shape[0] / size_set)]
-
-        X_test_ = X_test[:int(i * X_test.shape[0] / size_set)]
-        y_test_ = y_test[:int(i * y_test.shape[0] / size_set)]
-
         # Train the model
-        model = LDA.LDA(n_components)
+        model = LDA.LDA()
         model.fit(X_train_, y_train_)
-        model.set_coef_intercept(X_train, y_train)
         # Get the training score
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
         # Get the cross validation score
-        cross_val_score.append(accuracy(y_test_, model.predict(X_test_)))
+        cross_val_score.append(accuracy(y_test, model.predict(X_test)))
        
     # Plot the learning curve
     print(train_score)
