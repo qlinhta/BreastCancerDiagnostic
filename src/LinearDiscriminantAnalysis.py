@@ -33,6 +33,7 @@ Input:
     X: training data
     y: training label
     k: number of classes
+    max_iter: maximum number of iterations
     verbose: print the information or not
 Output:
     w: weight vector
