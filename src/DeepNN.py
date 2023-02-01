@@ -29,7 +29,7 @@ plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
 from src import metrics
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 
 """
 Deep neural network classifies
@@ -99,8 +99,8 @@ if __name__ == '__main__':
     X = data.drop('diagnosis', axis=1)
     y = data['diagnosis']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-    """
     # Find the best hyperparameters
+    """
     best_model = None
     best_acc = 0
     for hidden_size in [10, 50, 100, 200]:
@@ -108,7 +108,7 @@ if __name__ == '__main__':
             for batch_size in [16, 32, 64]:
                 for learning_rate in [0.1, 0.5, 1, 5]:
                     model = NeuralNet(hidden_size=hidden_size, num_classes=2, num_epochs=num_epochs,
-                                      batch_size=batch_size, learning_rate=learning_rate)
+                                      batch_size=batch_size, learning_rate=learning_rate, verbose=True)
                     model.fit(X_train, y_train)
                     y_pred = model.predict(X_test)
                     acc = metrics.accuracy(y_test, y_pred)
@@ -118,14 +118,13 @@ if __name__ == '__main__':
                         print('hidden_size: {}, num_epochs: {}, batch_size: {}, learning_rate: {}, acc: {}'.format(
                             hidden_size, num_epochs, batch_size, learning_rate, acc))
     print('Best accuracy: {:.2f}'.format(best_acc))
-    """
     # Train the best model
-    model = NeuralNet(hidden_size=10, num_classes=2, num_epochs=200,
-                      batch_size=32, learning_rate=0.5)
+    model = best_model
+    """
+    model = NeuralNet(hidden_size=100, num_classes=2, num_epochs=100, batch_size=16, learning_rate=0.1)
 
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-
     # metrics
     print('Accuracy: {:.2f}'.format(metrics.accuracy(y_test, y_pred)))
     print('Precision: {:.2f}'.format(metrics.precision(y_test, y_pred)))
@@ -149,3 +148,16 @@ if __name__ == '__main__':
     plt.ylabel('Log Scale of Texture Mean')
     plt.legend()
     plt.show()
+
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    accuracies = []
+    for train_index, test_index in kf.split(X):
+        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+        model = NeuralNet(hidden_size=100, num_classes=2, num_epochs=100, batch_size=16, learning_rate=0.1)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        accuracies.append(metrics.accuracy(y_test, y_pred))
+    print('Cross validation accuracy: {:.2f}'.format(np.mean(accuracies)))
+
+
