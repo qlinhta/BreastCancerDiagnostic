@@ -197,7 +197,7 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     # plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()
 
-
+"""
 def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
     train_score = []
     cross_val_score = []
@@ -232,6 +232,7 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
     plt.grid()
     # plt.savefig('output_plots/learning_curve_lda.png')
     plt.show()
+"""
 
 def learning_curve_lda(X_train, y_train, X_test, y_test):
     train_score = []
