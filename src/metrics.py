@@ -206,7 +206,7 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
         X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
         y_train_ = y_train[:int(i * y_train.shape[0] / size_set)]
         # Train the model
-        model = LinearDiscriminantAnalysis.LinearDiscriminantAnalysis(max_iter=max_iter)
+        model = LinearDiscriminantAnalysis.LinearDiscriminantAnalysis()
         model.fit(X_train_, y_train_)
         # Get the training score
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
