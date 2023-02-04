@@ -31,7 +31,8 @@
   ```
   python3 src/make_data_beautiful.py
   ```
-* Run files `main.py` or `Notebooks/LogisticRegression.ipynb` to get the results of implemented models (Logistic Regression and LDA)
+* Run files `main.py` or `Notebooks/LogisticRegression.ipynb` to get the results of implemented models (Logistic
+  Regression and LDA)
   ```
   python3 src/main.py
   ```
@@ -54,10 +55,13 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 | Logistic Regression | 0.98     | 0.97      | 0.97   | 0.97     |
 | LDA                 | ---      | ---       | ---    | ---      |
 | Linear SVM          | 0.98     | 0.97      | 0.97   | 0.97     |
+| NeuralNet           | 0.97     | 0.97      | 0.95   | 0.96     |
 | XGBoost             | 0.97     | 0.97      | 0.95   | 0.96     |
-| AdaBoost            | 0.97     | 0.97      | 0.95   | 0.96     |
-| CatBoost            | 0.98     | 0.97      | 0.97   | 0.97     |
+| Ridge               | 0.98     | 0.97      | 0.97   | 0.97     |
 
+Figure 1: Metrics of implemented models (Logistic Regression and LDA) and `sklearn` models
+
+![Metrics of implemented models (Logistic Regression and LDA) and sklearn models](src/output_plots/model_performance.png)
 
 * The results of statistical analysis are in directory `plots/`
 * The results of implemented models are in directory `src/output_plots/`
@@ -85,7 +89,8 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 
 #### Overview dataset and problem:
 
-* Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
+*
+Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
 
 * Problem: Predict whether the cancer is benign or malignant
 * Data description:

@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.linear_model import RidgeClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 import torch
 import torch.nn as nn
@@ -13,19 +15,19 @@ import os
 from src import metrics
 
 
-def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=True):
+def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=False):
     lr = LogisticRegression(learning_rate=5, max_iter=1000, verbose=verbose)
     lda = LinearDiscriminantAnalysis()
     nn = NeuralNet(hidden_size=100, num_classes=2, num_epochs=100, batch_size=16, learning_rate=0.1)
     lsvm = LinearSVC(C=1, max_iter=100, random_state=42, verbose=verbose)
-    catboost = CatBoostClassifier(learning_rate=0.1, max_depth=13, n_estimators=500, verbose=verbose)
+    ridge = RidgeClassifier(alpha=0.1, random_state=42)
     xgboost = XGBClassifier(learning_rate=0.1, max_depth=13, n_estimators=500, verbose=verbose)
     models = {
         'Logistic Regression': lr,
-        'Linear Discriminant Analysis': lda,
+        'LDA': lda,
         'Neural Network': nn,
         'Linear SVM': lsvm,
-        'CatBoost': catboost,
+        'Ridge': ridge,
         'XGBoost': xgboost,
     }
     y_preds = {}
@@ -36,14 +38,13 @@ def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=True):
         accuracy = metrics.accuracy(y_test, y_pred)
         if verbose:
             print(f'{model.__class__.__name__} accuracy: {accuracy:.4f}')
-        # Save the model, if Neural Network using PyTorch, else using sklearn
-        if not os.path.exists('../models'):
-            os.makedirs('../models')
+        if not os.path.exists('models'):
+            os.makedirs('models')
         if model.__class__.__name__ == 'NeuralNet':
-            torch.save(model.state_dict(), f'../models/{model.__class__.__name__}.pt')
+            torch.save(model.state_dict(), f'models/{model.__class__.__name__}.pth')
         else:
             from joblib import dump
-            dump(model, f'../models/{model.__class__.__name__}.joblib')
+            dump(model, f'models/{model.__class__.__name__}.joblib')
     print('Done')
     return models, y_preds
 
@@ -219,35 +220,17 @@ class LinearDiscriminantAnalysis(object):
         return cross_validation
 
 
-class CatBoostClassifier(object):
-    def __init__(self, learning_rate=0.1, max_depth=13, n_estimators=500, verbose=False):
-        self.learning_rate = learning_rate
-        self.max_depth = max_depth
-        self.n_estimators = n_estimators
+class RidgeRegressionClassifier(object):
+    def __init__(self, alpha=1.0, verbose=False):
+        self.alpha = alpha
         self.verbose = verbose
-        self.trees = []
+        self.model = RidgeClassifier(alpha=alpha)
 
     def fit(self, X, y):
-        y_pred = np.zeros(y.shape)
-        for i in range(self.n_estimators):
-            tree = DecisionTreeRegressor(max_depth=self.max_depth)
-            tree.fit(X, y - y_pred)
-            self.trees.append(tree)
-            y_pred += self.learning_rate * tree.predict(X)
-            if self.verbose:
-                print('Iteration: {}, loss: {}'.format(i + 1, metrics.mse(y, y_pred)))
+        self.model.fit(X, y)
 
     def predict(self, X):
-        y_pred = np.zeros(X.shape[0])
-        for tree in self.trees:
-            y_pred += self.learning_rate * tree.predict(X)
-        return np.round(y_pred)
-
-    def predict_proba(self, X):
-        y_pred = np.zeros(X.shape[0])
-        for tree in self.trees:
-            y_pred += self.learning_rate * tree.predict(X)
-        return np.round(np.array([1 - y_pred, y_pred]).T, 2)
+        return self.model.predict(X)
 
     def cross_validation(self, X, y, n_splits=10):
         # Split the dataset into n_splits
