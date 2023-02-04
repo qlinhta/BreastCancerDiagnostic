@@ -23,7 +23,7 @@ plt.rc('legend', fontsize=18)
 plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
-from src import LogisticRegression, metrics
+from src import Models, metrics
 from sklearn.model_selection import train_test_split
 
 df = pd.read_csv('../dataset/breast-cancer-wisconsin-processed.csv')
@@ -56,7 +56,7 @@ max_iters = [100, 200, 400, 500, 1000, 1500]
                                                                               learning_rates, max_iters,
                                                                               k=10, verbose=True)'''
 best_learning_rate, best_max_iter = 5, 1000
-model = LogisticRegression.LogisticRegression(learning_rate=best_learning_rate, max_iter=best_max_iter, verbose=True)
+model = Models.LogisticRegression(learning_rate=best_learning_rate, max_iter=best_max_iter, verbose=True)
 model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
@@ -83,7 +83,6 @@ plt.scatter(X_test[y_pred != y_test]['smoothness_mean_log'], X_test[y_pred != y_
 plt.xlabel('Log Scale of Smoothness Mean')
 plt.ylabel('Log Scale of Texture Mean')
 plt.legend()
-plt.savefig('output_plots/LR_predicted_labels.png')
 plt.show()
 
 fig, ax = plt.subplots(1, 2, figsize=(20, 10))
@@ -108,7 +107,6 @@ for i in range(len(y_test)):
     if y_test.iloc[i] != y_pred[i]:
         ax[1].scatter(X_test.iloc[i]['smoothness_mean_log'], X_test.iloc[i]['texture_mean_log'], marker='x',
                       label='Incorrect', s=100, edgecolors='black', facecolors='black')
-plt.savefig('output_plots/LR_true_vs_predicted_labels.png')
 plt.show()
 
 # Print best hyperparameters

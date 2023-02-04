@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 
+from src import Models
+
 # Set style for plots as latex style
 plt.style.use('seaborn-paper')
 plt.rc('text', usetex=True)
@@ -15,8 +17,6 @@ plt.rc('legend', fontsize=18)
 plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
-
-from src import LogisticRegression, LinearDiscriminantAnalysis
 
 
 def accuracy(y, y_pred):
@@ -78,7 +78,6 @@ def roc_curve(y, y_pred):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
     plt.legend(loc="lower right")
-    # plt.savefig('output_plots/roc_curve.png')
     plt.show()
 
 
@@ -97,7 +96,6 @@ def precision_recall_curve(y, y_pred):
     plt.ylim([-0.05, 1.05])
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
-    # plt.savefig('output_plots/precision_recall_curve.png')
     plt.show()
 
 
@@ -127,7 +125,6 @@ def confusion_matrix(y, y_pred):
     plt.ylabel('True label')
     plt.title('Confusion matrix')
     plt.tick_params(labelsize=15)
-    # plt.savefig('output_plots/confusion_matrix.png')
     plt.show()
 
 
@@ -140,7 +137,6 @@ def loss_curve(losses):
         ax.set_ylabel('Loss')
         ax.tick_params(labelsize=15)
         ax.legend(loc='upper right')
-        # plt.savefig('output_plots/accuracy_curve.png')
         plt.show()
     except Exception as e:
         print("Error: ", e)
@@ -155,7 +151,6 @@ def accuracy_curve(accuracies):
         ax.set_ylabel('Accuracy')
         ax.tick_params(labelsize=15)
         ax.legend(loc='lower right')
-        # plt.savefig('output_plots/loss_curve.png')
         plt.show()
     except Exception as e:
         print("Error: ", e)
@@ -170,7 +165,7 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
         X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
         y_train_ = y_train[:int(i * y_train.shape[0] / size_set)]
         # Train the model
-        model = LogisticRegression.LogisticRegression(learning_rate=learning_rate, max_iter=max_iter)
+        model = Models.LogisticRegression(learning_rate=learning_rate, max_iter=max_iter)
         model.fit(X_train_, y_train_)
         # Get the training score
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
@@ -193,7 +188,6 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
     plt.grid()
-    # plt.savefig('output_plots/learning_curve_lr.png')
     plt.show()
 
 
@@ -206,7 +200,7 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
         X_train_ = X_train[:int(i * X_train.shape[0] / size_set)]
         y_train_ = y_train[:int(i * y_train.shape[0] / size_set)]
         # Train the model
-        model = LinearDiscriminantAnalysis.LinearDiscriminantAnalysis()
+        model = Models.LinearDiscriminantAnalysis()
         model.fit(X_train_, y_train_)
         # Get the training score
         train_score.append(accuracy(y_train_, model.predict(X_train_)))
@@ -229,5 +223,4 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
     plt.grid()
-    # plt.savefig('output_plots/learning_curve_lda.png')
     plt.show()

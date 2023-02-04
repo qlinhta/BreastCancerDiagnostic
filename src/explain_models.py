@@ -27,7 +27,7 @@ plt.rc('legend', fontsize=18)
 plt.rc('lines', markersize=10)
 
 warnings.filterwarnings('ignore')
-from src import LogisticRegression, metrics
+from src import Models, metrics
 from sklearn.model_selection import train_test_split
 
 # Load model
