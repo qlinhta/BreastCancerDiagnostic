@@ -55,8 +55,6 @@ def classification_summary(y, y_pred):
     from sklearn.metrics import classification_report
     print('Classification report:')
     print(classification_report(y, y_pred))
-    print('Confusion matrix:')
-    print(confusion_matrix(y, y_pred))
 
 
 def roc_curve(y, y_pred):
@@ -224,3 +222,12 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
     plt.legend()
     plt.grid()
     plt.show()
+
+
+def mse(y, y_pred):
+    return np.mean((y - y_pred) ** 2)
+
+
+def auc(y_test, y_pred):
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+    return auc(fpr, tpr)

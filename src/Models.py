@@ -1,10 +1,44 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.svm import LinearSVC
+from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBClassifier
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
 
 from src import metrics
 
 
-def _tuning(X, y, learning_rates, max_iters, k=10, verbose=True):
+def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=True):
+    lr = LogisticRegression(learning_rate=5, max_iter=1000, verbose=verbose)
+    lda = LinearDiscriminantAnalysis()
+    nn = NeuralNet(hidden_size=100, num_classes=2, num_epochs=100, batch_size=16, learning_rate=0.1)
+    lsvm = LinearSVC(C=1, max_iter=100, random_state=42, verbose=verbose)
+    catboost = CatBoostClassifier(learning_rate=0.1, max_depth=13, n_estimators=500, verbose=verbose)
+    xgboost = XGBClassifier(learning_rate=0.1, max_depth=13, n_estimators=500, verbose=verbose)
+    models = {
+        'Logistic Regression': lr,
+        'Linear Discriminant Analysis': lda,
+        'Neural Network': nn,
+        'Linear SVM': lsvm,
+        'CatBoost': catboost,
+        'XGBoost': xgboost,
+    }
+    y_preds = {}
+    for model in models.values():
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        y_preds[model.__class__.__name__] = y_pred
+        accuracy = metrics.accuracy(y_test, y_pred)
+        if verbose:
+            print(f'{model.__class__.__name__} accuracy: {accuracy:.4f}')
+    print('Done')
+    return models, y_preds
+
+
+def _tuning_lr(X, y, learning_rates, max_iters, k=10, verbose=True):
     assert len(X) == len(y), "Need to have same number of samples for X and y"
     assert k > 0, "k needs to be positive"
     assert k < len(X), "k needs to be less than number of samples"
@@ -173,3 +207,177 @@ class LinearDiscriminantAnalysis(object):
             avg += self.score(X_test_, y_test_)
         print('Average: {}'.format(avg / k))
         return cross_validation
+
+
+class CatBoostClassifier(object):
+    def __init__(self, learning_rate=0.1, max_depth=13, n_estimators=500, verbose=False):
+        self.learning_rate = learning_rate
+        self.max_depth = max_depth
+        self.n_estimators = n_estimators
+        self.verbose = verbose
+        self.trees = []
+
+    def fit(self, X, y):
+        y_pred = np.zeros(y.shape)
+        for i in range(self.n_estimators):
+            tree = DecisionTreeRegressor(max_depth=self.max_depth)
+            tree.fit(X, y - y_pred)
+            self.trees.append(tree)
+            y_pred += self.learning_rate * tree.predict(X)
+            if self.verbose:
+                print('Iteration: {}, loss: {}'.format(i + 1, metrics.mse(y, y_pred)))
+
+    def predict(self, X):
+        y_pred = np.zeros(X.shape[0])
+        for tree in self.trees:
+            y_pred += self.learning_rate * tree.predict(X)
+        return np.round(y_pred)
+
+    def predict_proba(self, X):
+        y_pred = np.zeros(X.shape[0])
+        for tree in self.trees:
+            y_pred += self.learning_rate * tree.predict(X)
+        return np.round(np.array([1 - y_pred, y_pred]).T, 2)
+
+    def cross_validation(self, X, y, n_splits=10):
+        # Split the dataset into n_splits
+        X_split = np.array_split(X, n_splits)
+        y_split = np.array_split(y, n_splits)
+        accuracy_list = []
+        # Start the cross validation
+        for i in range(n_splits):
+            # Get the test set
+            X_test = X_split[i]
+            y_test = y_split[i]
+            # Get the train set
+            X_train = np.concatenate(X_split[:i] + X_split[i + 1:])
+            y_train = np.concatenate(y_split[:i] + y_split[i + 1:])
+            # Train the model
+            self.fit(X_train, y_train)
+            # Get the accuracy
+            accuracy = metrics.accuracy(y_test, self.predict(X_test))
+            accuracy_list.append(accuracy)
+        return np.mean(accuracy_list)
+
+
+class XGBoostClassifier(object):
+    def __init__(self, learning_rate=0.1, max_depth=7, n_estimators=100, verbose=False):
+        self.learning_rate = learning_rate
+        self.max_depth = max_depth
+        self.n_estimators = n_estimators
+        self.verbose = verbose
+        self.model = XGBClassifier(learning_rate=learning_rate, max_depth=max_depth, n_estimators=n_estimators,
+                                   verbose=verbose)
+
+    def fit(self, X, y):
+        self.model.fit(X, y)
+
+    def predict(self, X):
+        return self.model.predict(X)
+
+    def predict_proba(self, X):
+        return self.model.predict_proba(X)
+
+    def cross_validation(self, X, y, n_splits=10):
+        X_split = np.array_split(X, n_splits)
+        y_split = np.array_split(y, n_splits)
+        accuracy_list = []
+        for i in range(n_splits):
+            X_test = X_split[i]
+            y_test = y_split[i]
+            X_train = np.concatenate(X_split[:i] + X_split[i + 1:])
+            y_train = np.concatenate(y_split[:i] + y_split[i + 1:])
+            self.fit(X_train, y_train)
+            accuracy = metrics.accuracy(y_test, self.predict(X_test))
+            accuracy_list.append(accuracy)
+        return np.mean(accuracy_list)
+
+
+class LinearSVM(object):
+    def __init__(self, C=1.0, max_iter=100):
+        self.C = C
+        self.max_iter = max_iter
+        self.model = LinearSVC(C=C, max_iter=max_iter)
+
+    def fit(self, X, y):
+        self.model.fit(X, y)
+
+    def predict(self, X):
+        return self.model.predict(X)
+
+    def predict_proba(self, X):
+        return self.model.decision_function(X)
+
+    def cross_validation(self, X, y, n_splits=10):
+        X_split = np.array_split(X, n_splits)
+        y_split = np.array_split(y, n_splits)
+        accuracy_list = []
+        for i in range(n_splits):
+            X_test = X_split[i]
+            y_test = y_split[i]
+            X_train = np.concatenate(X_split[:i] + X_split[i + 1:])
+            y_train = np.concatenate(y_split[:i] + y_split[i + 1:])
+            self.fit(X_train, y_train)
+            accuracy = metrics.accuracy(y_test, self.predict(X_test))
+            accuracy_list.append(accuracy)
+        return np.mean(accuracy_list)
+
+
+class NeuralNet(nn.Module):
+    def __init__(self, hidden_size, num_classes, num_epochs, batch_size, learning_rate, verbose=False):
+        super(NeuralNet, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_classes = num_classes
+        self.num_epochs = num_epochs
+        self.batch_size = batch_size
+        self.learning_rate = learning_rate
+        self.verbose = verbose
+
+        self.fc1 = nn.Linear(30, self.hidden_size)
+        self.fc2 = nn.Linear(self.hidden_size, self.num_classes)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+    def fit(self, X_train, y_train):
+        # Convert the data to tensor
+        X_train = torch.from_numpy(X_train.values).float()
+        y_train = torch.from_numpy(y_train.values).long()
+
+        # Loss and optimizer
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.SGD(self.parameters(), lr=self.learning_rate)
+
+        # Train the model
+        for epoch in range(self.num_epochs):
+            for i in range(0, X_train.shape[0], self.batch_size):
+                # Forward pass
+                outputs = self(X_train[i:i + self.batch_size])
+                loss = criterion(outputs, y_train[i:i + self.batch_size])
+
+                # Backward and optimize
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+            if self.verbose and (epoch + 1) % 100 == 0:
+                print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch + 1, self.num_epochs, loss.item()))
+
+    def predict(self, X_test):
+        # Convert the data to tensor
+        X_test = torch.from_numpy(X_test.values).float()
+        # Test the model
+        with torch.no_grad():
+            outputs = self(X_test)
+            _, predicted = torch.max(outputs.data, 1)
+        return predicted.numpy()
+
+    def predict_proba(self, X_test):
+        # Convert the data to tensor
+        X_test = torch.from_numpy(X_test.values).float()
+        # Test the model
+        with torch.no_grad():
+            outputs = self(X_test)
+        return outputs.numpy()
