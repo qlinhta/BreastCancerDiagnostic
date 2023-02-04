@@ -59,10 +59,6 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 | XGBoost             | 0.97     | 0.97      | 0.95   | 0.96     |
 | Ridge               | 0.98     | 0.97      | 0.97   | 0.97     |
 
-Figure 1: Metrics of implemented models (Logistic Regression and LDA) and `sklearn` models
-
-![Metrics of implemented models (Logistic Regression and LDA) and sklearn models](src/output_plots/model_performance.png)
-
 * The results of statistical analysis are in directory `plots/`
 * The results of implemented models are in directory `src/output_plots/`
 * Models are saved in directory `src/output_models/`
