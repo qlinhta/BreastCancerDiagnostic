@@ -50,14 +50,14 @@
 
 Table 1: Results of implemented models (Logistic Regression and LDA) and `sklearn` models
 
-| Model               | Accuracy | Precision | Recall | F1-score |
-|---------------------|----------|-----------|--------|----------|
-| Logistic Regression | 0.98     | 0.97      | 0.97   | 0.97     |
-| LDA                 | ---      | ---       | ---    | ---      |
-| Linear SVM          | 0.98     | 0.97      | 0.97   | 0.97     |
-| NeuralNet           | 0.97     | 0.97      | 0.95   | 0.96     |
-| XGBoost             | 0.97     | 0.97      | 0.95   | 0.96     |
-| Ridge               | 0.98     | 0.97      | 0.97   | 0.97     |
+| Model               | Accuracy | Precision | Recall   | F1-score | ROC AUC  |
+|---------------------|----------|-----------|----------|----------|----------|
+| Logistic Regression | 0.981481 | 0.972973  | 0.972973 | 0.972973 | 0.979444 |
+| LDA                 | 0.972222 | 1.0       | 0.918919 | 0.957746 | 0.959459 |
+| Neural Network      | 0.990741 | 0.973684  | 1.0      | 0.986667 | 0.992958 |
+| Linear SVM          | 0.981481 | 0.972973  | 0.972973 | 0.972973 | 0.979444 |
+| Ridge               | 0.953704 | 1.0       | 0.864865 | 0.927536 | 0.932432 |
+| XGBoost             | 0.962963 | 0.945946  | 0.945946 | 0.945946 | 0.958888 |
 
 * The results of statistical analysis are in directory `plots/`
 * The results of implemented models are in directory `src/output_plots/`
@@ -86,6 +86,7 @@ Table 1: Results of implemented models (Logistic Regression and LDA) and `sklear
 #### Overview dataset and problem:
 
 *
+
 Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic))
 
 * Problem: Predict whether the cancer is benign or malignant
