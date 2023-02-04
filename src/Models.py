@@ -8,6 +8,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import os
+
 from src import metrics
 
 
@@ -34,8 +36,14 @@ def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=True):
         accuracy = metrics.accuracy(y_test, y_pred)
         if verbose:
             print(f'{model.__class__.__name__} accuracy: {accuracy:.4f}')
-        # Save the model
-        torch.save(model.state_dict(), f'./models/{model.__class__.__name__}.pt')
+        # Save the model, if Neural Network using PyTorch, else using sklearn
+        if not os.path.exists('../models'):
+            os.makedirs('../models')
+        if model.__class__.__name__ == 'NeuralNet':
+            torch.save(model.state_dict(), f'../models/{model.__class__.__name__}.pt')
+        else:
+            from joblib import dump
+            dump(model, f'../models/{model.__class__.__name__}.joblib')
     print('Done')
     return models, y_preds
 
