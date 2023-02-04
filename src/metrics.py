@@ -57,7 +57,7 @@ def classification_summary(y, y_pred):
     print(classification_report(y, y_pred))
 
 
-def roc_curve(y, y_pred):
+def roc_curve(y, y_pred, save=True, save_to=None):
     if len(y) != len(y_pred):
         raise ValueError("y and y_pred must have the same length")
     if not all([i in [0, 1] for i in y]):
@@ -76,10 +76,14 @@ def roc_curve(y, y_pred):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
     plt.legend(loc="lower right")
+    if save:
+        if save_to is None:
+            raise ValueError("save_to must be specified")
+        plt.savefig(save_to)
     plt.show()
 
 
-def precision_recall_curve(y, y_pred):
+def precision_recall_curve(y, y_pred, save=True, save_to=None):
     from sklearn.metrics import precision_recall_curve, average_precision_score
     precision, recall, _ = precision_recall_curve(y, y_pred)
     average_precision = average_precision_score(y, y_pred)
@@ -94,10 +98,14 @@ def precision_recall_curve(y, y_pred):
     plt.ylim([-0.05, 1.05])
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
+    if save:
+        if save_to is None:
+            raise ValueError("save_to must be specified")
+        plt.savefig(save_to)
     plt.show()
 
 
-def confusion_matrix(y, y_pred):
+def confusion_matrix(y, y_pred, save=True, save_to=None):
     if len(y) != len(y_pred):
         raise ValueError("y and y_pred must have the same length")
     if len(y) == 0:
@@ -123,10 +131,14 @@ def confusion_matrix(y, y_pred):
     plt.ylabel('True label')
     plt.title('Confusion matrix')
     plt.tick_params(labelsize=15)
+    if save:
+        if save_to is None:
+            raise ValueError("save_to must be specified")
+        plt.savefig(save_to)
     plt.show()
 
 
-def loss_curve(losses):
+def loss_curve(losses, save=True, save_to=None):
     try:
         fig, ax = plt.subplots(1, 1, figsize=(8, 8))
         ax.plot(losses, label='Loss', linewidth=1, color='black')
@@ -135,12 +147,16 @@ def loss_curve(losses):
         ax.set_ylabel('Loss')
         ax.tick_params(labelsize=15)
         ax.legend(loc='upper right')
+        if save:
+            if save_to is None:
+                raise ValueError("save_to must be specified")
+            plt.savefig(save_to)
         plt.show()
     except Exception as e:
         print("Error: ", e)
 
 
-def accuracy_curve(accuracies):
+def accuracy_curve(accuracies, save=True, save_to=None):
     try:
         fig, ax = plt.subplots(1, 1, figsize=(8, 8))
         ax.plot(accuracies, label='Accuracy', linewidth=1, color='black')
@@ -149,12 +165,16 @@ def accuracy_curve(accuracies):
         ax.set_ylabel('Accuracy')
         ax.tick_params(labelsize=15)
         ax.legend(loc='lower right')
+        if save:
+            if save_to is None:
+                raise ValueError("save_to must be specified")
+            plt.savefig(save_to)
         plt.show()
     except Exception as e:
         print("Error: ", e)
 
 
-def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter):
+def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter, save=True, save_to=None):
     train_score = []
     cross_val_score = []
     size_set = 10
@@ -186,10 +206,14 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter)
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
     plt.grid()
+    if save:
+        if save_to is None:
+            raise ValueError("save_to must be specified")
+        plt.savefig(save_to)
     plt.show()
 
 
-def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
+def learning_curve_lda(X_train, y_train, X_test, y_test, save=True, save_to=None):
     train_score = []
     cross_val_score = []
     size_set = 10
@@ -221,6 +245,10 @@ def learning_curve_lda(X_train, y_train, X_test, y_test, max_iter):
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
     plt.grid()
+    if save:
+        if save_to is None:
+            raise ValueError("save_to must be specified")
+        plt.savefig(save_to)
     plt.show()
 
 

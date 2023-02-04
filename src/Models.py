@@ -34,6 +34,8 @@ def fit_and_predict_all(X_train, X_test, y_train, y_test, verbose=True):
         accuracy = metrics.accuracy(y_test, y_pred)
         if verbose:
             print(f'{model.__class__.__name__} accuracy: {accuracy:.4f}')
+        # Save the model
+        torch.save(model.state_dict(), f'./models/{model.__class__.__name__}.pt')
     print('Done')
     return models, y_preds
 
