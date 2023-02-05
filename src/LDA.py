@@ -1,19 +1,19 @@
 import numpy as np
-import metrics_lda
 from scipy.stats import multivariate_normal
 from numpy.linalg import det, inv
+
+from src import metrics
+
 
 class LDA:
 
     def __init__(self):
         self.n_classes = 2
-        self.coef = np.zeros((self.n_classes,))
+        self.coefficient = np.zeros((self.n_classes,))
         self.intercept = 0.0
-        #2nd method for prediction
         self.priors = []
 
-
-    def means(self,X, y):
+    def mean(self, X, y):
         classes = np.unique(y)
         means = np.zeros((classes.shape[0], X.shape[1]))
         for i in range(classes.shape[0]):
@@ -24,45 +24,37 @@ class LDA:
         classes = np.unique(y)
         pi_k = np.zeros((len(classes),))
         for c in classes:
-            pi_k[c] = len(y[y==c]) / len(y)
+            pi_k[c] = len(y[y == c]) / len(y)
         return pi_k
 
-    def general_cov(self, X, y,):
+    def general_cov(self, X, y, ):
         classes = np.unique(y)
         sigma = np.zeros((X.shape[1], X.shape[1]))
         for c in classes:
             sigma = sigma + len(X[y == c]) * np.cov(X[y == c].T)
         sigma = sigma / X.shape[0]
         return sigma
-    
-    def fit(self,X,y):
-        means_overall = self.means(X, y)
-        pi_overall = self.prob_k(X,y)
+
+    def fit(self, X, y):
+        means_overall = self.mean(X, y)
+        pi_overall = self.prob_k(X, y)
         sigma_inv = np.linalg.inv(self.general_cov(X, y))
-
-        # coef
-        self.coef = sigma_inv @ (means_overall[1] - means_overall[0])
-        #self.coef = sigma_inv @ means_overall
-        
-
-        # intercept
+        self.coefficient = sigma_inv @ (means_overall[1] - means_overall[0])
         p = (means_overall[1] - means_overall[0]) @ sigma_inv @ (means_overall[0] + means_overall[1])
         self.intercept = (-0.5 * p - np.log(pi_overall[0] / pi_overall[1]))
-    
+
     def decision_boundary(self, X):  # x.Tw + b = 0
-        return X @ self.coef.T + self.intercept
+        return X @ self.coefficient.T + self.intercept
 
     def predict(self, X):
-        #return np.argmax(self.decision_boundary(X),axis = 1)
         scores = self.decision_boundary(X)
         y_predicted = [1 if i > 0 else 0 for i in scores]
         return np.array(y_predicted)
-    
+
     def cross_validation_lda(self, X, y, k):
         X_folds = np.array_split(X, k)
         y_folds = np.array_split(y, k)
         model = LDA()
-        model.set_coef_intercept(X, y)
         accuracies = []
         for i in range(k):
             # Get the training data
@@ -75,20 +67,20 @@ class LDA:
             accuracies.append(metrics.accuracy(y_val, y_predicted))
         return np.mean(accuracies)
 
-    def predict_proba_to_plot(self,X):
+    def predict_proba_to_plot(self, X):
         y_pred = self.predict(X)
         proba = np.zeros((X.shape[0], 2))
         proba[:, 1] = (y_pred == 1).astype(int)
         proba[:, 0] = (y_pred == 0).astype(int)
         return np.round(proba)
-    
-    #----------------------another approach for prediction-----------------------------------
 
-    def set_priors(self,X,y):
-       for i in range(2):
-        self.priors.append(len(y[y==i])/len(y))
+    # ----------------------another approach for prediction-----------------------------------
 
-    def normal_multivariate(self,X,mean,cov):
+    def set_priors(self, X, y):
+        for i in range(2):
+            self.priors.append(len(y[y == i]) / len(y))
+
+    def normal_multivariate(self, X, mean, cov):
         n = mean.shape[0]
         cov_inv = inv(cov)
         cov_det = det(cov)
@@ -97,16 +89,16 @@ class LDA:
         denominator = (2 * np.pi) ** (n / 2) * cov_det ** 0.5
         probas = nominator / denominator
         return probas
-         
-    def predict_proba(self,X,mean,cov0,cov1,priors):
-        probas = np.zeros((X.shape[0],self.n_classes))
+
+    def predict_proba(self, X, mean, cov0, cov1, priors):
+        probability = np.zeros((X.shape[0], self.n_classes))
         for k in range(self.n_classes):
             mean_k = mean[k]
-            if(k==0):
+            if (k == 0):
                 cov_k = cov0
             else:
                 cov_k = cov1
             p_k = priors[k]
-            probas[:,k] = p_k*multivariate_normal.pdf(X,mean_k, cov_k)
-        y_predicted = [1 if probas[i][1] > probas[i][0] else 0 for i,row in enumerate(probas)]
+            probability[:, k] = p_k * multivariate_normal.pdf(X, mean_k, cov_k)
+        y_predicted = [1 if probability[i][1] > probability[i][0] else 0 for i, row in enumerate(probability)]
         return np.array(y_predicted)
