@@ -61,7 +61,7 @@ class LDA:
     def cross_validation_lda(self, X, y, k):
         X_folds = np.array_split(X, k)
         y_folds = np.array_split(y, k)
-        model = LDA(self.n_components)
+        model = LDA()
         model.set_coef_intercept(X, y)
         accuracies = []
         for i in range(k):
