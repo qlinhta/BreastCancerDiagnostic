@@ -205,11 +205,11 @@ def learning_curve_lr(X_train, y_train, X_test, y_test, learning_rate, max_iter,
     plt.yticks(np.arange(0.5, 1.05, 0.1))
     plt.xticks(range(len(train_score)), [str(int(i * 100 / size_set)) + '%' for i in range(1, size_set + 1)])
     plt.legend()
-    plt.grid()
     if save:
         if save_to is None:
             raise ValueError("save_to must be specified")
         plt.savefig(save_to)
+    plt.grid()
     plt.show()
 
 
