@@ -172,3 +172,7 @@ Dataset: [Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/ml/d
 * [Book Machine Learning in Action](https://www.manning.com/books/machine-learning-in-action) by Peter Harrington
 * [Machine Learning A Probabilistic Perspective](http://noiselab.ucsd.edu/ECE228/Murphy_Machine_Learning.pdf) by Kevin
   P. Murphy
+
+#### License:
+
+* [MIT License](http://www.opensource.org/licenses/mit-license.php)
